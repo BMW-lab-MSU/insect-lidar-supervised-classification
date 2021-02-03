@@ -1,1 +1,1 @@
-# inset-lidar-supervised-classification
+# insect-lidar-supervised-classification
