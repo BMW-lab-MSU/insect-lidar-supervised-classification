@@ -28,3 +28,4 @@ for i = 1:length(adjusted_data_decembercal)
     features((i-1)*178+1:i*178,3) = im_features(:,3);
 
 end 
+end
