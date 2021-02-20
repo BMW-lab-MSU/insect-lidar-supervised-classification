@@ -1,4 +1,4 @@
-function features = feature_extraction(file_path)
+function features = feature_extraction(file_path,number_features)
 % This function extracts three features per row of an image and
 % concatinates the features of an image vertically. 
 %
@@ -9,9 +9,11 @@ function features = feature_extraction(file_path)
 
 load(file_path);
 
-features = zeros(length(adjusted_data_decembercal)*178,3);
+rows = length(adjusted_data_decembercal)*178;
 
-for i = 1:length(adjusted_data_decembercal)
+features = zeros(rows,number_features);
+
+for i = 1:rows
 
     A = adjusted_data_decembercal(i).normalized_data;
 
@@ -23,9 +25,9 @@ for i = 1:length(adjusted_data_decembercal)
     
     im_features = [(row_mean - image_mean), filtered_row_std, first_diff];
 
-    features((i-1)*178+1:i*178,1) = im_features(:,1);
-    features((i-1)*178+1:i*178,2) = im_features(:,2);
-    features((i-1)*178+1:i*178,3) = im_features(:,3);
-
+    for k = 1:number_features
+        features((i-1)*178+1:i*178,k) = im_features(:,k);
+    end
+            
 end 
 end
