@@ -49,7 +49,6 @@ filtered_row_std = std(Azeromean')';
 features = [(row_mean - image_mean), filtered_row_std];
 
 % This gives two features per row. We may need additional features to get a decent classifier, but this should give us a good start.
-
 % After you do all that, you can visualize a classifier like this:
 
 labels = zeros(178,1);
