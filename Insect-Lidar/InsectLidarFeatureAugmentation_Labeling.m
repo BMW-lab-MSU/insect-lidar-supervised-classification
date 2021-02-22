@@ -4,8 +4,10 @@ clear all; close all; clc;
 
 %%
 tic;
-load("/Users/joeyaist/Box/Data_2020_Insect_Lidar/2020-09-17/HyaliteCreekWhite-193146/adjusted_data_decembercal.mat");
-load("/Users/joeyaist/Box/Data_2020_Insect_Lidar/2020-09-17/events/fftcheck.mat");
+% load("/Users/joeyaist/Box/Data_2020_Insect_Lidar/2020-09-17/HyaliteCreekWhite-193146/adjusted_data_decembercal.mat");
+% load("/Users/joeyaist/Box/Data_2020_Insect_Lidar/2020-09-17/events/fftcheck.mat");
+load("/Users/kyler/Box/Data_2020_Insect_Lidar/2020-09-17/HyaliteCreekWhite-193146/adjusted_data_decembercal.mat");
+load("/Users/kyler/Box/Data_2020_Insect_Lidar/2020-09-17/events/fftcheck.mat");
 folder = 'HyaliteCreekWhite-193146';
 
 feature_label = zeros(length(adjusted_data_decembercal)*178,1);
@@ -71,3 +73,5 @@ for i = 1:length(adjusted_data_decembercal)
     zlabel('Max Difference of Azeromean');
 end
 toc
+%% 
+for_classification = [feature_label, features_tot];
