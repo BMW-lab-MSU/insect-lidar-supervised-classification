@@ -75,3 +75,18 @@ end
 toc
 %% 
 for_classification = [feature_label, features_tot];
+
+%%
+add_filepath = "/Users/joeyaist/Box/Data_2020_Insect_Lidar/2020-09-17/HyaliteCreekWhite-193146/adjusted_data_decembercal.mat";
+fftcheck_filepath = "/Users/joeyaist/Box/Data_2020_Insect_Lidar/2020-09-17/events/fftcheck.mat";
+folder = 'HyaliteCreekWhite-193146';
+
+features = feature_extraction(add_filepath);
+
+augmented_features = feature_augmentation(add_filepath,fftcheck_filepath,folder,features);
+
+figure()
+subplot(121);
+scatter3(features(:,1),features(:,2),features(:,3));
+subplot(122);
+scatter3(augmented_features(:,1),augmented_features(:,2),augmented_features(:,3));
