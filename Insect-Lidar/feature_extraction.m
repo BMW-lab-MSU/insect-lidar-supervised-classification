@@ -19,7 +19,7 @@ number_features = 3;
 
 features = zeros(rows,number_features);
 
-for i = 1:rows
+for i = 1:length(adjusted_data_decembercal)
 
     A = adjusted_data_decembercal(i).normalized_data;
 
