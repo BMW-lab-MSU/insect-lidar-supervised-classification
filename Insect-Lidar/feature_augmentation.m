@@ -57,31 +57,25 @@ for k = 1:count
             % Resample at half the original sampling rate after lowpass filtering
             D_insect = decimate(A_shift,2);
             
-            for m = 1:length(C_insect)-1024
-                % remove random values until the length is that of the
-                % original image
-                C_insect(randi(1024,1)) = [];
-            end
-            for n = 1:1024-length(D_insect)
-                % Add the mean value of the row until it is the length of
-                % the original image
-                mean_D = mean(D_insect);
-                D_insect = [D_insect,mean_D];
-            end
+            % remove random values until the length is that of the
+            % original image
+            C_insect(randperm(length(C_insect), length(C_insect) - 1024)) = [];
+            
+            % Add the mean value of the row until it is the length of
+            % the original image
+            mean_D = mean(D_insect);
+            D_insect = [D_insect, repelem(mean_D, 1024 - length(D_insect))];
+            
         else
             % Now repeat decimation and interpolation with the flipped
             % insect row
             C_insect = interp(B_flip,3);
             D_insect = decimate(B_flip,2);
             
-            for m = 1:length(C_insect)-1024
-                C_insect(randi(1024,1)) = [];
-            end
-            
-            for n = 1:1024-length(D_insect)
-                mean_D = mean(D_insect);
-                D_insect = [D_insect,mean_D];
-            end
+            C_insect(randperm(length(C_insect), length(C_insect) - 1024)) = [];
+        
+            mean_D = mean(D_insect);
+            D_insect = [D_insect, repelem(mean_D, 1024 - length(D_insect))];
                      
         end
 
