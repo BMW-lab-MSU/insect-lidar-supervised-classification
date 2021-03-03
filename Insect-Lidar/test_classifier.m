@@ -1,5 +1,5 @@
 %%
-addpath('../common')
+addpath('../common')    
 
 %% Setup data paths
 tic
@@ -15,13 +15,13 @@ datapaths = {
     [box_dir '/' '2020-09-18'],
     [box_dir '/' '2020-09-20'],
  };
-disp('Loading Classifier: WeightedKNN');
+disp('Loading Classifier: CoarseTree');
 trained_model_dir = box_dir;
-load([trained_model_dir '/' 'WeightedKNN.mat']);
+load([trained_model_dir '/' 'CoarseTree.mat']);
 
 results = containers.Map();
 
-for datapaths_idx = 5   %:numel(datapaths)
+for datapaths_idx = 6:8   %:numel(datapaths)
     datapath = datapaths{datapaths_idx};
     date = datapath(end-4:end);
     disp(['Running on ' date '...']);
@@ -33,19 +33,24 @@ for datapaths_idx = 5   %:numel(datapaths)
         load([datapath '/' sub_folders(files,1:end) '/' 'adjusted_data_decembercal.mat']);
         %TODO: insert label creation function
         labels = extract_labels(fftcheck.insects, adjusted_data_decembercal);
+        labels = cellfun(@(x) logical(x), labels, 'UniformOutput', false);
+        labels_mat = cell2mat(labels);
+        [h,w] = size(labels_mat);
+        labels_mat = reshape(labels_mat,h*w,1);
         %TODO: insert feature extraction function
         features = feature_extraction([datapath '/' sub_folders(files,1:end) '/' 'adjusted_data_decembercal']);
         %TODO: add prediction functions
         disp(['Classifying... ' sub_folders(files,1:end)])
         %TODO: turn final answer into a 1 by 109 cell array where each cell
         %is 178 by 1 cell array
-        pred_labels = logical(WeightedKNN.predictFcn(features));
-        pred_labels_reshape = reshape(pred_labels,109,178);
-        pred_labels_cell = mat2cell(pred_labels_reshape,109,1,178);
-        shot(files - 2).PredictedLabels = pred_labels_reshape;
-        shot(files - 2).Labels = labels;
+        pred_labels = logical(CoarseTree.predictFcn(features));
+        pred_labels_reshape = reshape(pred_labels,h,w);
+        pred_labels_cell = num2cell(pred_labels_reshape,1);
+        shot(datapaths_idx - 5,files - 2).PredictedLabels = pred_labels_cell;
+        shot(datapaths_idx - 5,files - 2).Labels = labels;
         %TODO: add confusion mat to shot structure
-        shot(files-2).ConfusionMatrix = confusionmat(double(labels(:)),double(pred_labels_cell(:)));
+        shot(datapaths_idx - 5,files - 2).ConfusionMatrix = confusionmat(labels_mat,pred_labels);
+        shot(datapaths_idx - 5,files - 2).FileName = sub_folders(files,1:end);
     end
 end
 toc
