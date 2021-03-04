@@ -58,10 +58,10 @@ set(gca, 'TitleHorizontalAlignment', 'left')
 nexttile([2 1])
 
 % "hard" object
-plot(time, adjusted_data_decembercal(imagenum).normalized_data(22, pulse), '--', 'LineWidth', 1.5)
+plot(time, adjusted_data_decembercal(imagenum).normalized_data(22, pulse), '--', 'LineWidth', 1)
 hold on
 % insect
-plot(time, adjusted_data_decembercal(imagenum).normalized_data(insect_range, pulse), 'LineWidth', 1.5)
+plot(time, adjusted_data_decembercal(imagenum).normalized_data(insect_range, pulse), 'LineWidth', 1)
 ylabel('Intensity')
 set(gca, 'FontSize', 12)
 legend({'"hard" target', 'insect'})
@@ -71,5 +71,5 @@ set(gca, 'TitleHorizontalAlignment', 'left')
 
 tlayout.XLabel.String = "Time [ms]";
 
-
+%%
 exportgraphics(insect_fig, 'insect_example.pdf', 'ContentType', 'vector')
