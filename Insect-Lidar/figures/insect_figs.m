@@ -18,33 +18,58 @@ imagenum = fftcheck.insects(17).filenum;
 
 % NOTE: the human label has the wrong range. To me, it looks like
 % the insect starts one row above the label.
-insect_range = (fftcheck.insects(17).range - 1) * RANGE_INCREMENT;
-
+insect_range = (fftcheck.insects(17).range - 1);
 insect_lb = fftcheck.insects(17).lb;
 insect_ub = fftcheck.insects(17).ub;
-
 range = [1:30];
 pulse = [250:550];
+time = adjusted_data_decembercal(imagenum).time(pulse) * 1e3; % [ms]
 
-time = adjusted_data_decembercal(imagenum).time(pulse) * 1e3;
 
-insect_image = figure('Units', 'inches', 'Position', [2 2 4 3.5]);
+%%
+insect_fig = figure();
+tlayout = tiledlayout(insect_fig, 5, 1); 
+
+nexttile([3, 1])
+
+% lidar image
 imagesc(time, range * RANGE_INCREMENT, adjusted_data_decembercal(imagenum).normalized_data(range, pulse));
 ylabel('Range [m]')
-xlabel('Time [ms]')
 set(gca, 'FontSize', 12)
 colormap(brewermap([], 'Greys'))
-
+xticks([])
 
 % insect bounding box
 insect_time_start = time(insect_lb - pulse(1));
 insect_time_width = time(insect_ub - pulse(1)) - insect_time_start;
-insect_range_start = insect_range(1) - 0.5;
-insect_range_width = 1;
-rectangle('Position', [insect_time_start, insect_range_start, insect_time_width, 1], ...
-    'EdgeColor', '#D95319', 'LineWidth', 3, 'LineStyle', ':')
+insect_range_start = insect_range(1) * RANGE_INCREMENT - 1;
+insect_range_width = 2;
+rectangle('Position', [insect_time_start, insect_range_start, insect_time_width, insect_range_width], ...
+    'EdgeColor', '#D95319', 'LineWidth', 3, 'LineStyle', '-')
 
-% "hard" object annotation
-annotation('arrow',[0.25, 0.4], [0.6, 0.47], 'Color', '#0072BD', 'LineWidth', 3)
+% "hard" target annotation
+rectangle('Position', [time(1), 14, time(end) - time(1), 4], ...
+    'EdgeColor', '#0072BD', 'LineWidth', 3, 'LineStyle', '--')
 
-exportgraphics(insect_image, 'insect_example.pdf', 'ContentType', 'vector')
+title('(a)', 'FontSize', 12)
+set(gca, 'TitleHorizontalAlignment', 'left')
+
+%%
+nexttile([2 1])
+
+% "hard" object
+plot(time, adjusted_data_decembercal(imagenum).normalized_data(22, pulse), '--', 'LineWidth', 1.5)
+hold on
+% insect
+plot(time, adjusted_data_decembercal(imagenum).normalized_data(insect_range, pulse), 'LineWidth', 1.5)
+ylabel('Intensity')
+set(gca, 'FontSize', 12)
+legend({'"hard" target', 'insect'})
+
+title('(b)', 'FontSize', 12)
+set(gca, 'TitleHorizontalAlignment', 'left')
+
+tlayout.XLabel.String = "Time [ms]";
+
+
+exportgraphics(insect_fig, 'insect_example.pdf', 'ContentType', 'vector')
