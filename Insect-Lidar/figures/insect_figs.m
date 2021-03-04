@@ -64,7 +64,12 @@ hold on
 plot(time, adjusted_data_decembercal(imagenum).normalized_data(insect_range, pulse), 'LineWidth', 1)
 ylabel('Intensity')
 set(gca, 'FontSize', 12)
-legend({'"hard" target', 'insect'})
+
+legendobj = legend({'"hard" target', 'insect'})
+
+% change legend opacity
+set(legendobj.BoxFace, 'ColorType','truecoloralpha', 'ColorData',uint8(255*[1;1;1;.3]));
+set(legendobj.BoxEdge, 'ColorType','truecoloralpha', 'ColorData',uint8(255*[0.8;0.8;0.8;.3]));
 
 title('(b)', 'FontSize', 12)
 set(gca, 'TitleHorizontalAlignment', 'left')
