@@ -1,16 +1,24 @@
-box_dir = 'C:/Users/kyler/Box/Data_2020_Insect_Lidar';
+% box_dir = 'C:/Users/kyler/Box/Data_2020_Insect_Lidar';
+box_dir = '../../Data_2020_Insect_Lidar';
+
 datapath = [box_dir '/' '2020-09-16'];
+
 load([datapath '/' 'events/fftcheck.mat']);
-sub_folders = ls(datapath);
+
+sub_folders = {dir(datapath).name};
+
 for files = 3:length(sub_folders)-2
-    disp(['Loading data... ' sub_folders(files,1:end)])
-    load([datapath '/' sub_folders(files,1:end) '/' 'adjusted_data_decembercal.mat']);
+    disp(['Loading data... ' sub_folders{files}])
+    load([datapath '/' sub_folders{files} '/' 'adjusted_data_decembercal.mat']);
+    
     labels = extract_labels(fftcheck.insects, adjusted_data_decembercal);
     labels = cellfun(@(x) logical(x), labels, 'UniformOutput', false);
     labels_mat = cell2mat(labels);
     [h,w] = size(labels_mat);
     labels_mat = reshape(labels_mat,h*w,1);
-    features = feature_extraction([datapath '/' sub_folders(files,1:end) '/' 'adjusted_data_decembercal']);
+    
+    features = feature_extraction([datapath '/' sub_folders{files} '/' 'adjusted_data_decembercal']);
+    
     if files == 3
         labels_tot = labels_mat;
         features_tot = features;
