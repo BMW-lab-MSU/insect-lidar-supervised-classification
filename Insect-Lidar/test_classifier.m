@@ -13,9 +13,9 @@ datapaths = {
     [box_dir '/' '2020-09-18'];
     [box_dir '/' '2020-09-20'];
  };
-disp('Loading Classifier: CoarseTree');
-trained_model_dir = box_dir;
-load([trained_model_dir '/' 'CoarseTree.mat']);
+%disp('Loading Classifier: CoarseTree');
+trained_model_dir = 'classifiers';
+load([trained_model_dir '/' 'ldaWeightFN10.mat']);
 
 results = containers.Map();
 
@@ -47,7 +47,7 @@ for datapaths_idx = 6:8   %:numel(datapaths)
         
         disp(['Classifying... ' sub_folders{files}])
         
-        pred_labels = logical(CoarseTree.predictFcn(features));
+        pred_labels = logical(ldaWeightFN10.predictFcn(features));
         
         % turn predicted labels into a cell array, where each cell
         % corresponds to one image
@@ -60,5 +60,21 @@ for datapaths_idx = 6:8   %:numel(datapaths)
         shot(datapaths_idx - 5,files - 2).FileName = sub_folders{files};
     end
 end
+
+total_confusion = zeros(2);
+for folder = 1:size(shot, 1)
+    for datafile = 1:size(shot, 2)
+        if shot(folder, datafile).ConfusionMatrix
+            total_confusion = total_confusion + shot(folder, datafile).ConfusionMatrix;
+        else
+            %disp(folder)
+            %disp(datafile)
+        end
+    end
+end
+
+disp(total_confusion)
+[a, p, r, f3] = analyze_confusion(total_confusion)
+
 toc
     
