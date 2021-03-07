@@ -92,6 +92,8 @@ for date = results.keys
     end
 end
 
+results('total') = struct('PerRow', row_total_confusion, 'PerImage', image_total_confusion);
+
 disp('row results')
 disp(row_total_confusion)
 sum(row_total_confusion, 'all')
