@@ -1,5 +1,4 @@
 %% Setup data paths
-tic
 % box_dir = 'C:/Users/kyler/Box/Data_2020_Insect_Lidar';
 box_dir = '../../Data_2020_Insect_Lidar';
 
@@ -103,6 +102,3 @@ disp('image results')
 disp(image_total_confusion)
 sum(image_total_confusion, 'all')
 [a, p, r, f3] = analyze_confusion(image_total_confusion)
-
-toc
-    
