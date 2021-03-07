@@ -15,7 +15,7 @@ datapaths = {
  };
 %disp('Loading Classifier: CoarseTree');
 trained_model_dir = 'classifiers';
-load([trained_model_dir '/' 'ldaWeightFN10.mat']);
+load([trained_model_dir '/' 'subspaceDiscriminant.mat']);
 
 results = containers.Map();
 
@@ -47,34 +47,60 @@ for datapaths_idx = 6:8   %:numel(datapaths)
         
         disp(['Classifying... ' sub_folders{files}])
         
-        pred_labels = logical(ldaWeightFN10.predictFcn(features));
+        pred_labels = logical(subspaceDiscriminant.predictFcn(features));
         
         % turn predicted labels into a cell array, where each cell
         % corresponds to one image
         pred_labels_reshape = reshape(pred_labels, size(labels_mat));
         pred_labels_cell = num2cell(pred_labels_reshape,1);
         
-        shot(datapaths_idx - 5,files - 2).PredictedLabels = pred_labels_cell;
-        shot(datapaths_idx - 5,files - 2).Labels = labels;
-        shot(datapaths_idx - 5,files - 2).ConfusionMatrix = confusionmat(labels_vec,pred_labels);
-        shot(datapaths_idx - 5,files - 2).FileName = sub_folders{files};
-    end
-end
-
-total_confusion = zeros(2);
-for folder = 1:size(shot, 1)
-    for datafile = 1:size(shot, 2)
-        if shot(folder, datafile).ConfusionMatrix
-            total_confusion = total_confusion + shot(folder, datafile).ConfusionMatrix;
-        else
-            %disp(folder)
-            %disp(datafile)
+        % compute per-row results
+        row_results(files - 2).FileName = sub_folders{files};
+        row_results(files - 2).PredictedLabels = pred_labels_cell;
+        row_results(files - 2).Labels = labels;
+        
+        confusion = confusionmat(labels_vec, pred_labels);
+        if numel(confusion) == 1
+            confusion = [confusion 0; 0 0];
         end
+        row_results(files - 2).ConfusionMatrix = confusion;
+
+        % compute per-image results
+        image_results(files - 2).FileName = sub_folders{files};
+        image_results(files - 2).PredictedLabels = cellfun(@(p) any(p), pred_labels_cell);
+        image_results(files - 2).Labels = cellfun(@(l) any(l), labels);
+
+        confusion = confusionmat(image_results(files - 2).Labels, image_results(files - 2).PredictedLabels);
+        if numel(confusion) == 1
+            confusion = [confusion 0; 0 0];
+        end
+        image_results(files - 2).ConfusionMatrix = confusion;
+    end
+
+    results(date) = struct('PerRow', row_results, 'PerImage', image_results);
+end
+
+row_total_confusion = zeros(2);
+image_total_confusion = zeros(2);
+
+for date = results.keys
+    for i = 1:numel(results(date{:}).PerRow)
+        row_total_confusion = row_total_confusion + results(date{:}).PerRow(i).ConfusionMatrix;
+    end
+    for i = 1:numel(results(date{:}).PerImage)
+        image_total_confusion = image_total_confusion + results(date{:}).PerImage(i).ConfusionMatrix;
     end
 end
 
-disp(total_confusion)
-[a, p, r, f3] = analyze_confusion(total_confusion)
+disp('row results')
+disp(row_total_confusion)
+sum(row_total_confusion, 'all')
+[a, p, r, f3] = analyze_confusion(row_total_confusion)
+
+disp('image results')
+disp(image_total_confusion)
+sum(image_total_confusion, 'all')
+[a, p, r, f3] = analyze_confusion(image_total_confusion)
 
 toc
     
