@@ -14,7 +14,7 @@ datapaths = {
     [box_dir '/' '2020-09-20'];
  };
 %disp('Loading Classifier: CoarseTree');
-trained_model_dir = 'classifiers';
+trained_model_dir = '.';
 load([trained_model_dir '/' 'subspaceDiscriminant.mat']);
 
 results = containers.Map();
