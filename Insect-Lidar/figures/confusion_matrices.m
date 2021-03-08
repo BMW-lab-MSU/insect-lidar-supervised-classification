@@ -1,6 +1,6 @@
 load('../results.mat')
 
-confusion_fig = figure('Units', 'inches', 'Position', [2 2 6 3.5]);
+confusion_fig = figure('Units', 'inches', 'Position', [2 2 6 2.5]);
 t = tiledlayout(confusion_fig, 1, 2);
 
 nexttile
