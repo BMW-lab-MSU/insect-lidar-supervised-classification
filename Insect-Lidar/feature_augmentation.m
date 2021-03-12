@@ -1,4 +1,4 @@
-function augmented_features = feature_augmentation(adjusted_data_decembercal_filepath, fftcheck_filepath, folder, features)
+function [augmented_features, features, augmented_labels] = feature_augmentation(adjusted_data_decembercal_filepath, fftcheck_filepath, folder, features)
 % This function is fed in the file paths for the adjusted_data_decembercal
 % and the fftcheck for a choosen folder and the features extracted using 
 % the feature_extraction function. Then, for every insect row indetified in
@@ -91,10 +91,14 @@ for k = 1:count
         D(range(k),:) = D_insect;         
     
         % Add white guassian noise to the two images
-        A = awgn(A,30);
-        B = awgn(B,30);
-        C = awgn(C,30);
-        D = awgn(D,30);
+        r_A = randi([20 50],1);
+        A = awgn(A,r_A);
+        r_B = randi([20 50],1);
+        B = awgn(B,r_B);    
+        r_C = randi([20 50],1);
+        C = awgn(C,r_C);
+        r_D = randi([20 50],1);
+        D = awgn(D,r_D);
     
         % Extract the three features.
         % Filter the noise by taking mean of the row and take absolute value
@@ -140,6 +144,9 @@ for k = 1:count
         augmented_features((k-1)*40+1:k*40,l) = add_features(:,l);
     end
 end
+augmented_features = [augmented_features];
 
-augmented_features = [features;augmented_features];
+features = [features;augmented_features];
+
+augmented_labels = ones(length(augmented_features),1);
 end

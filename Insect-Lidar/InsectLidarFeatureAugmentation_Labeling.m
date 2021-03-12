@@ -4,10 +4,10 @@ clear all; close all; clc;
 
 %%
 tic;
-% load("/Users/joeyaist/Box/Data_2020_Insect_Lidar/2020-09-17/HyaliteCreekWhite-193146/adjusted_data_decembercal.mat");
-% load("/Users/joeyaist/Box/Data_2020_Insect_Lidar/2020-09-17/events/fftcheck.mat");
-load("/Users/kyler/Box/Data_2020_Insect_Lidar/2020-09-17/HyaliteCreekWhite-193146/adjusted_data_decembercal.mat");
-load("/Users/kyler/Box/Data_2020_Insect_Lidar/2020-09-17/events/fftcheck.mat");
+load("/Users/joeyaist/Box/Data_2020_Insect_Lidar/2020-09-17/HyaliteCreekWhite-193146/adjusted_data_decembercal.mat");
+load("/Users/joeyaist/Box/Data_2020_Insect_Lidar/2020-09-17/events/fftcheck.mat");
+%load("/Users/kyler/Box/Data_2020_Insect_Lidar/2020-09-17/HyaliteCreekWhite-193146/adjusted_data_decembercal.mat");
+%load("/Users/kyler/Box/Data_2020_Insect_Lidar/2020-09-17/events/fftcheck.mat");
 folder = 'HyaliteCreekWhite-193146';
 
 feature_label = zeros(length(adjusted_data_decembercal)*178,1);
@@ -66,7 +66,8 @@ for i = 1:length(adjusted_data_decembercal)
     scatter3(features(labels==0,1),features(labels==0,2),features(labels==0,3),'bo');
     hold on;
     scatter3(features(labels==1,1),features(labels==1,2),features(labels==1,3),'rx');
-    legend({'None','Insect'}); 
+    hold on
+    %legend({'None','Insect','fake Insect'}); 
     title('Features of 2020-09-17: HyaliteCreekWhite-193146');
     xlabel('Row Mean - Image Mean');
     ylabel('Standard Diviation');
@@ -84,11 +85,26 @@ folder = 'HyaliteCreekWhite-193146';
 
 features = feature_extraction(add_filepath);
 
-augmented_features = feature_augmentation(add_filepath,fftcheck_filepath,folder,features);
+[augmented_features, features, labels] = feature_augmentation(add_filepath,fftcheck_filepath,folder,features);
 
 figure()
-subplot(121);
+subplot(131);
 scatter3(features(:,1),features(:,2),features(:,3));
-subplot(122);
-scatter3(augmented_features(:,1),augmented_features(:,2),augmented_features(:,3));
+title('features');
+subplot(132);
+scatter3(augmented_features(:,1),augmented_features(:,2),augmented_features(:,3), 'g+');
+title('features+augmented');
+subplot(133);
+scatter3(augmented_features(17978:end,1),augmented_features(17978:end,2),augmented_features(17978:end,3));
+title('augemented');
 toc
+
+%%
+load(fftcheck_filepath); load(add_filepath);
+labels = extract_labels(fftcheck.insects, adjusted_data_decembercal);
+
+scatter3(features(labels==0),'bo'); % Plot non-insects
+hold on;
+scatter3(features(labels==1),'rx'); % Plot original, real insects
+scatter3(augmented,'g+'); % Plot augmented, fake insects
+hold off;
