@@ -1,4 +1,4 @@
-function features = feature_extraction(X)
+function features = extract_features(X)
 % This function extracts three features per row of an image and
 % concatinates the features of an image vertically. 
 %
