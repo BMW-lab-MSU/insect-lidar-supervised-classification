@@ -24,15 +24,16 @@ for i = 1:length(adjusted_data_decembercal)
     A = adjusted_data_decembercal(i).normalized_data;
 
     % Extract the three features.
-    % Filter the noise by taking mean of the row and take absolute value
-    Azeromean = abs(A - repmat(mean(A,2),1,size(A,2))); 
+
     % Subtract the image mean from the row means.
     row_mean = mean(A,2);
     image_mean = mean(A(:));
+
     % Take the standard deviation of the filtered rows
-    filtered_row_std = std(Azeromean')';
+    filtered_row_std = std(A, 0, 2);
+
     % Take max difference from each row
-    first_diff = max(abs(diff(Azeromean')))';
+    first_diff = max(abs(diff(A, 1, 2)), [], 2);
     
     im_features = [(row_mean - image_mean), filtered_row_std, first_diff];
 
