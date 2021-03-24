@@ -28,6 +28,8 @@ filtered_row_std = std(X, 0, 2);
 % Take max difference from each row
 first_diff = max(abs(diff(X, 1, 2)), [], 2);
 
+fundamental_freq_fft = fft(X);
+
 features = [(row_mean - image_mean), filtered_row_std, first_diff];
 
 end
