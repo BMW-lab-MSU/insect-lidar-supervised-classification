@@ -51,6 +51,8 @@ avg_psd = mean(psd, 2);
 std_psd = std(psd, 0, 2);
 median_psd = median(psd, 2);
 mad_psd = mad(psd, 1, 2);
+skew_psd = skewness(psd, 1, 2);
+kurtosis_psd = kurtosis(psd, 1, 2);
 
 figure
 plot(avg_psd)
@@ -67,3 +69,11 @@ title('median psd')
 figure
 plot(mad_psd)
 title('median absolute deviation of psd')
+
+figure
+plot(skew_psd - mean(skew_psd))
+title('skewness of psd')
+
+figure
+plot(kurtosis_psd)
+title('kurtosis of psd')
