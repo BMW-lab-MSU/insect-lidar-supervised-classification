@@ -19,3 +19,18 @@ set(gca,'FontSize',18);                                 % Use font size 18
 [pks,locs] = findpeaks(Y);
 disp(pks(2)*1024/2);
 max_loc = find(Y == max(Y))
+
+
+%%
+load('InsectLidarDataTutorial/exampledata.mat')
+
+data = exampledata(1).normalized_data;
+
+psd = abs(fftshift(fft(data, [], 2), 2)).^2;
+
+imagesc(psd(:,end/2+5:end), [0, 100])
+
+figure
+plot(psd(160,end/2+5:end))
+hold on 
+plot(psd(97,end/2+5:end), 'LineWidth', 3)
