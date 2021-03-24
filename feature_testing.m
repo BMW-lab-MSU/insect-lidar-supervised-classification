@@ -27,23 +27,22 @@ load('InsectLidarDataTutorial/exampledata.mat')
 
 data = exampledata(1).normalized_data;
 
-psd = abs(fftshift(fft(data, [], 2), 2)).^2;
+psd = abs(fft(data, [], 2)).^2;
+psd = psd(:,1:end/2);
 
-% we are only interested on plotting the positive frequencies,
-% so we start at end/2; however, the dc component dominates, so
-% we cut that out by starting at end/2 + 5 (arbitrarily)
+
 figure
 imagesc(data)
 title('original data: insect at row 97')
 figure
-imagesc(psd(:,end/2+5:end), [0, 100])
+imagesc(psd, [0, 100])
 title('psd')
 
 
 figure
-plot(psd(160,end/2+5:end))
+plot(psd(160,:))
 hold on 
-plot(psd(97,end/2+5:end), 'LineWidth', 3)
+plot(psd(97,:), 'LineWidth', 3)
 title('psd')
 
 
@@ -77,3 +76,7 @@ title('skewness of psd')
 figure
 plot(kurtosis_psd)
 title('kurtosis of psd')
+
+figure
+plot(sum(psd, 2))
+title('total energy')
