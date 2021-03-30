@@ -26,6 +26,7 @@ close all
 load('InsectLidarDataTutorial/exampledata.mat')
 
 data = exampledata(1).normalized_data;
+% data = medfilt1(data, 10, [], 2);
 
 X = fft(data, [], 2);
 psd = abs(X).^2;
@@ -60,6 +61,10 @@ for row = 1:height(psd)
 end
 
 
+
+[pks_insect, locs_insect, pkwidth_insect, pkprom_insect] = findpeaks(psd(97,:));
+
+%%
 figure
 imagesc(data)
 title('original data: insect at row 97')
