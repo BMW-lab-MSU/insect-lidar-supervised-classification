@@ -1,4 +1,4 @@
-function visualize_feature_distributions(features, labels)
+function visualize_feature_distributions(features, labels, feature_names)
 
 group = categorical(labels, [0, 1], {'Non-insect', 'Insect'});
 
@@ -7,7 +7,6 @@ group = categorical(labels, [0, 1], {'Non-insect', 'Insect'});
 color = [];
 markers = 'od';
 sizes = [];
-feature_names = ["Difference of means", "Std dev", "Max first difference"];
 
 figure
 [h, ax, bigax] = gplotmatrix(features, [], group, color, markers, sizes, [], 'grpbars', feature_names);
