@@ -81,8 +81,35 @@ for row = 1:height(psd)
 end
 
 
+insectpsd = psd(97,:);
+treepsd = psd(160,:);
 
-[pks_insect, locs_insect, pkwidth_insect, pkprom_insect] = findpeaks(psd(97,:));
+
+
+%% Find the fundamental frequency via the Harmonic Product Spectrum
+% If I multiply 4 downsampled spectra, I get a fundamental of 17;
+% when I use 3 downsampled spectra, I get a fundamental of 33.
+insectpsd2 = insectpsd(1:2:end);
+insectpsd3 = insectpsd(1:3:end);
+insectpsd4 = insectpsd(1:4:end);
+hps = insectpsd(1:numel(insectpsd3)) .* insectpsd2(1:numel(insectpsd3)) .* insectpsd3;
+
+[~, fundamental_loc] = findpeaks(hps, 'NPeaks', 1, 'SortStr', 'descend');
+
+%% Find the harmonics
+% Once we know what the fundamental frequency is, we can determine the
+% harmonic locations as follows; due to noise, the harmonics will generally
+% not be exactly at integer multiples of the fundmantal frequency bin,
+% so we need to find peaks that are within a few frequency bins of an integer mutliple
+[pks_insect, locs_insect, pkwidth_insect, pkprom_insect] = findpeaks(insectpsd);
+
+bin_differences = locs_insect/fundamental_loc - fix(locs_insect/fundamental_loc);
+nbins = 2;
+tmp = find(1 - bin_differences <= nbins/fundamental_loc | bin_differences <= nbins/fundamental_loc);
+harmonic_locs = locs_insect(tmp);
+harmonic_widths = pkwidth_insect(tmp);
+haromnic_prom = pkprom_insect(tmp);
+harominc_pks = pks_insect(tmp);
 
 %%
 figure
