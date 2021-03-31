@@ -20,6 +20,26 @@ set(gca,'FontSize',18);                                 % Use font size 18
 disp(pks(2)*1024/2);
 max_loc = find(Y == max(Y))
 
+[pks,locs] = findpeaks(Y);
+sorted_pks = sort(pks);
+idx = [1 3 7];
+for i = 1:3
+    har_pks = find(pks == sorted_pks(end-idx(i)));
+    loc_har = locs(har_pks(2));
+    freq_har(i) = fqdata(loc_har);
+    amp_har(i) = Y(loc_har);
+end
+
+% first_har_pks = find(pks == sorted_pks(end-3)); % shift over three because there are two copies of first harmonic
+% loc_first_har = locs(first_har_pks(2));
+% freq_first_har = fqdata(loc_first_har);
+% amp_first_har = Y(loc_first_har);
+% 
+% second_har_pks = find(pks == sorted_pks(end-5)); % shift over three because there are two copies of first harmonic
+% loc_second_har = locs(second_har_pks(2));
+% freq_second_har = fqdata(loc_second_har);
+% amp_second_har = Y(loc_second_har);
+
 
 %% Trevor's dumb tests
 close all
