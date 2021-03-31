@@ -81,8 +81,8 @@ for row = 1:height(psd)
 end
 
 
-insectpsd = psd(97,:);
-treepsd = psd(160,:);
+insectpsd = normalized_psd(97,:);
+treepsd = normalized_psd(160,:);
 
 
 
@@ -92,9 +92,16 @@ treepsd = psd(160,:);
 insectpsd2 = insectpsd(1:2:end);
 insectpsd3 = insectpsd(1:3:end);
 insectpsd4 = insectpsd(1:4:end);
-hps = insectpsd(1:numel(insectpsd3)) .* insectpsd2(1:numel(insectpsd3)) .* insectpsd3;
+insecthps = insectpsd(1:numel(insectpsd3)) .* insectpsd2(1:numel(insectpsd3)) .* insectpsd3;
 
-[~, fundamental_loc] = findpeaks(hps, 'NPeaks', 1, 'SortStr', 'descend');
+[~, fundamental_loc] = findpeaks(insecthps, 'NPeaks', 1, 'SortStr', 'descend');
+
+treepsd2 = treepsd(1:2:end);
+treepsd3 = treepsd(1:3:end);
+treepsd4 = treepsd(1:4:end);
+treehps = insectpsd(1:numel(treepsd3)) .* treepsd2(1:numel(treepsd3)) .* treepsd3;
+
+[~, tree_fundamental_loc] = findpeaks(treehps, 'Npeaks', 1, 'SortStr', 'descend');
 
 %% Find the harmonics
 % Once we know what the fundamental frequency is, we can determine the
@@ -108,8 +115,64 @@ nbins = 2;
 tmp = find(1 - bin_differences <= nbins/fundamental_loc | bin_differences <= nbins/fundamental_loc);
 harmonic_locs = locs_insect(tmp);
 harmonic_widths = pkwidth_insect(tmp);
-haromnic_prom = pkprom_insect(tmp);
-harominc_pks = pks_insect(tmp);
+harmonic_prom = pkprom_insect(tmp);
+harmonic_pks = pks_insect(tmp);
+
+[pks_tree, locs_tree, pkwidth_tree, pkprom_tree] = findpeaks(treepsd);
+
+bin_differences = locs_tree/tree_fundamental_loc - fix(locs_tree/tree_fundamental_loc);
+nbins = 2;
+tmp = find(1 - bin_differences <= nbins/tree_fundamental_loc | bin_differences <= nbins/tree_fundamental_loc);
+tree_harmonic_locs = locs_tree(tmp);
+tree_harmonic_widths = pkwidth_tree(tmp);
+tree_harmonic_prom = pkprom_tree(tmp);
+tree_harmonic_pks = pks_tree(tmp);
+
+%% Ratios of harmonic peaks
+insect_12_ratio = harmonic_pks(1)/harmonic_pks(2);
+insect_13_ratio = harmonic_pks(1)/harmonic_pks(3);
+insect_23_ratio = harmonic_pks(2)/harmonic_pks(3);
+
+tree_12_ratio = tree_harmonic_pks(1)/tree_harmonic_pks(2);
+tree_13_ratio = tree_harmonic_pks(1)/tree_harmonic_pks(3);
+tree_23_ratio = tree_harmonic_pks(2)/tree_harmonic_pks(3);
+
+%%
+figure
+scatter(1:3, harmonic_locs(1:3), 'filled')
+hold on
+scatter(1:3, tree_harmonic_locs(1:3), 'filled')
+title('harmonic frequencies')
+legend('insect', 'tree')
+
+figure
+scatter(1:3, harmonic_widths(1:3), 'filled')
+hold on
+scatter(1:3, tree_harmonic_widths(1:3), 'filled')
+title('harmonic peak widths')
+legend('insect', 'tree')
+
+figure
+scatter(1:3, harmonic_prom(1:3), 'filled')
+hold on
+scatter(1:3, tree_harmonic_prom(1:3), 'filled')
+title('harmonic peak prominences')
+legend('insect', 'tree')
+
+figure
+scatter(1:3, harmonic_pks(1:3), 'filled')
+hold on
+scatter(1:3, tree_harmonic_pks(1:3), 'filled')
+title('harmonic peak heights')
+legend('insect', 'tree')
+
+figure
+scatter(1:3, [insect_12_ratio, insect_13_ratio, insect_23_ratio], 'filled')
+hold on
+scatter(1:3, [tree_12_ratio, tree_13_ratio, tree_23_ratio], 'filled')
+title('harmonic peak ratios')
+legend('insect', 'tree')
+xticklabels({'1/2', '', '1/3', '', '2/3'})
 
 %%
 figure
