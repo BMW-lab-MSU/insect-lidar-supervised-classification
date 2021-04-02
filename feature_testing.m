@@ -175,83 +175,33 @@ legend('insect', 'tree')
 xticklabels({'1/2', '', '1/3', '', '2/3'})
 
 %% Frequency domain features for all rows
+[harmonic_pks, harmonic_locs, harmonic_pkwidth, harmonic_pkprom, harmonic_pk_ratio] = extractHarmonicFeatures(normalized_psd, 3);
 
-% compute the harmonic product spectrum
-spectra = zeros(height(normalized_psd), 3, floor(width(normalized_psd)/3));
-hps = zeros(height(normalized_psd), floor(width(normalized_psd)/3));
-for i = 1:height(normalized_psd)
-    spectra(i, 1, :) = normalized_psd(i, 1:size(spectra, 3));
-    spectra(i, 2, :) = normalized_psd(i, 1:2:(2 * size(spectra, 3)));
-    spectra(i, 3, :) = normalized_psd(i, 1:3:(3 * size(spectra, 3)));
-    hps(i,:) = spectra(i, 1, :) .* spectra(i, 2, :) .* spectra(i, 3, :);
-end
-
-% find the fundamental frequency
-fundamental_loc = zeros(1, height(normalized_psd));
-for i = 1:height(normalized_psd)
-   [~, fundamental_loc(i)] = findpeaks(hps(i,:), 'NPeaks', 1, 'SortStr', 'descend');
-end
-
-% get all features for all peaks
-pks = cell(1, height(normalized_psd));
-locs = cell(1, height(normalized_psd));
-pkwidth = cell(1, height(normalized_psd));
-pkprom = cell(1, height(normalized_psd));
-
-for i = 1:height(normalized_psd)
-    [pks{i}, locs{i}, pkwidth{i}, pkprom{i}] = findpeaks(normalized_psd(i,:));
-end
-
-% find the harmonic frequencies and features
-harmonic_pks = zeros(height(normalized_psd), 3);
-harmonic_locs = zeros(height(normalized_psd), 3);
-harmonic_pkwidth = zeros(height(normalized_psd), 3);
-harmonic_pkprom = zeros(height(normalized_psd), 3);
-harmonic_12_ratio = zeros(height(normalized_psd), 1);
-harmonic_13_ratio = zeros(height(normalized_psd), 1);
-harmonic_23_ratio = zeros(height(normalized_psd), 1);
-
-for i = 1:height(normalized_psd)
-    bin_differences = locs{i}/fundamental_loc(i) - fix(locs{i}/fundamental_loc(i));
-    nbins = 2;
-    tmp = find(1 - bin_differences <= nbins/fundamental_loc(i) | bin_differences <= nbins/fundamental_loc(i));
-    
-    % fill with nans if there are less than 3 harmonics
-    if numel(tmp) >= 3
-        harmonic_locs(i,:) = locs{i}(tmp(1:3));
-        harmonic_pkwidth(i,:) = pkwidth{i}(tmp(1:3));
-        harmonic_pkprom(i,:) = pkprom{i}(tmp(1:3));
-        harmonic_pks(i,:) = pks{i}(tmp(1:3));
-    else
-        harmonic_locs(i,:) = [locs{i}(tmp), nan(1, 3 - numel(tmp))];
-        harmonic_pkwidth(i,:) = [pkwidth{i}(tmp), nan(1, 3 - numel(tmp))];
-        harmonic_pkprom(i,:) = [pkprom{i}(tmp), nan(1, 3 - numel(tmp))];
-        harmonic_pks(i,:) = [pks{i}(tmp), nan(1, 3 - numel(tmp))];
-    end
-    
-    harmonic_12_ratio(i) = harmonic_pks(i, 1) / harmonic_pks(i, 2);
-    harmonic_13_ratio(i) = harmonic_pks(i, 1) / harmonic_pks(i, 3);
-    harmonic_23_ratio(i) = harmonic_pks(i, 2) / harmonic_pks(i, 3);
-    
-end
 
 %% pairwise scatter plot of features
 labels = zeros(height(data), 1);
 labels(97) = 1;
 
 % concatenate features
-features = cat(2, avg_psd, std_psd, median_psd, mad_psd, skew_psd, kurtosis_psd, ...
-    energy90pct, energy90pct_no_dc, harmonic_locs, harmonic_pks, harmonic_pkwidth, ...
-    harmonic_pkprom, harmonic_12_ratio, harmonic_13_ratio, harmonic_23_ratio);
+% features = cat(2, avg_psd, std_psd, median_psd, mad_psd, skew_psd, kurtosis_psd, ...
+%     energy90pct, energy90pct_no_dc, harmonic_locs, harmonic_pks, harmonic_pkwidth, ...
+%     harmonic_pkprom, harmonic_12_ratio, harmonic_13_ratio, harmonic_23_ratio);
+features = cat(2, harmonic_locs, harmonic_pks, harmonic_pkwidth, ...
+    harmonic_pkprom, harmonic_pk_ratio);
 
-feature_names = ["avg psd", "std psd", "median psd", "mad psd", "skew psd", ...
-    "kurtosis psd", "90% energy", "90% energy no DC", "1st harmonic loc", ...
+% feature_names = ["avg psd", "std psd", "median psd", "mad psd", "skew psd", ...
+%     "kurtosis psd", "90% energy", "90% energy no DC", "1st harmonic loc", ...
+%     "2nd harmonic loc", "3rd harmonic loc", "1st harmonic height", ...
+%     "2nd harmonic height", "3rd harmonic height", "1st harmonic width", ...
+%     "2nd harmonic width", "3rd harmonic width", "1st harmonic prominence", ...
+%     "2nd harmonic prominence", "3rd harmonic prominence", "1st / 2nd ratio", ...
+%     "1st / 3rd ratio", "2nd / 3rd ratio"];
+feature_names = ["1st harmonic loc", ...
     "2nd harmonic loc", "3rd harmonic loc", "1st harmonic height", ...
     "2nd harmonic height", "3rd harmonic height", "1st harmonic width", ...
     "2nd harmonic width", "3rd harmonic width", "1st harmonic prominence", ...
     "2nd harmonic prominence", "3rd harmonic prominence", "1st / 2nd ratio", ...
     "1st / 3rd ratio", "2nd / 3rd ratio"];
-
 visualize_feature_distributions(features, labels, feature_names);
 
 %%
