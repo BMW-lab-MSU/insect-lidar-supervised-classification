@@ -57,152 +57,137 @@ normalized_psd = psd./psd(:,1);
 spectralphase = angle(X);
 
 
-avg_psd = mean(psd, 2);
-std_psd = std(psd, 0, 2);
-median_psd = median(psd, 2);
-mad_psd = mad(psd, 1, 2);
-skew_psd = skewness(psd, 1, 2);
-kurtosis_psd = kurtosis(psd, 1, 2);
+% avg_psd = mean(psd, 2);
+% std_psd = std(psd, 0, 2);
+% median_psd = median(psd, 2);
+% mad_psd = mad(psd, 1, 2);
+% skew_psd = skewness(psd, 1, 2);
+% kurtosis_psd = kurtosis(psd, 1, 2);
 
 
-% compute the index at which 90% of energy is contained
-energypct = cumsum(psd,2)./sum(psd,2);
-energy90pct = zeros(height(psd), 1);
-energy90pct_no_dc = zeros(height(psd), 1);
+% % compute the index at which 90% of energy is contained
+% energypct = cumsum(psd,2)./sum(psd,2);
+% energy90pct = zeros(height(psd), 1);
+% energy90pct_no_dc = zeros(height(psd), 1);
 
-for row = 1:height(psd)
-    % ignore dc component because it contains basically all the energy 
-    % NOTE: actually, ignoring the dc component might not be important;
-    %       in this case, removing the dc component only makes a difference
-    %       of 1 index at most
-    energy90pct(row) = find(energypct(row,1:end) >= 0.90, 1);
-    energy90pct_no_dc(row) = find(energypct(row,2:end) >= 0.90, 1);
+% for row = 1:height(psd)
+%     % ignore dc component because it contains basically all the energy 
+%     % NOTE: actually, ignoring the dc component might not be important;
+%     %       in this case, removing the dc component only makes a difference
+%     %       of 1 index at most
+%     energy90pct(row) = find(energypct(row,1:end) >= 0.90, 1);
+%     energy90pct_no_dc(row) = find(energypct(row,2:end) >= 0.90, 1);
 
-end
-
-
-insectpsd = normalized_psd(97,:);
-treepsd = normalized_psd(160,:);
+% end
 
 
-
-%% Find the fundamental frequency via the Harmonic Product Spectrum
-% If I multiply 4 downsampled spectra, I get a fundamental of 17;
-% when I use 3 downsampled spectra, I get a fundamental of 33.
-insectpsd2 = insectpsd(1:2:end);
-insectpsd3 = insectpsd(1:3:end);
-insectpsd4 = insectpsd(1:4:end);
-insecthps = insectpsd(1:numel(insectpsd3)) .* insectpsd2(1:numel(insectpsd3)) .* insectpsd3;
-
-[~, fundamental_loc] = findpeaks(insecthps, 'NPeaks', 1, 'SortStr', 'descend');
-
-treepsd2 = treepsd(1:2:end);
-treepsd3 = treepsd(1:3:end);
-treepsd4 = treepsd(1:4:end);
-treehps = insectpsd(1:numel(treepsd3)) .* treepsd2(1:numel(treepsd3)) .* treepsd3;
-
-[~, tree_fundamental_loc] = findpeaks(treehps, 'Npeaks', 1, 'SortStr', 'descend');
-
-%% Find the harmonics
-% Once we know what the fundamental frequency is, we can determine the
-% harmonic locations as follows; due to noise, the harmonics will generally
-% not be exactly at integer multiples of the fundmantal frequency bin,
-% so we need to find peaks that are within a few frequency bins of an integer mutliple
-[pks_insect, locs_insect, pkwidth_insect, pkprom_insect] = findpeaks(insectpsd);
-
-bin_differences = locs_insect/fundamental_loc - fix(locs_insect/fundamental_loc);
-nbins = 2;
-tmp = find(1 - bin_differences <= nbins/fundamental_loc | bin_differences <= nbins/fundamental_loc);
-harmonic_locs = locs_insect(tmp);
-harmonic_widths = pkwidth_insect(tmp);
-harmonic_prom = pkprom_insect(tmp);
-harmonic_pks = pks_insect(tmp);
-
-[pks_tree, locs_tree, pkwidth_tree, pkprom_tree] = findpeaks(treepsd);
-
-bin_differences = locs_tree/tree_fundamental_loc - fix(locs_tree/tree_fundamental_loc);
-nbins = 2;
-tmp = find(1 - bin_differences <= nbins/tree_fundamental_loc | bin_differences <= nbins/tree_fundamental_loc);
-tree_harmonic_locs = locs_tree(tmp);
-tree_harmonic_widths = pkwidth_tree(tmp);
-tree_harmonic_prom = pkprom_tree(tmp);
-tree_harmonic_pks = pks_tree(tmp);
-
-%% Ratios of harmonic peaks
-insect_12_ratio = harmonic_pks(1)/harmonic_pks(2);
-insect_13_ratio = harmonic_pks(1)/harmonic_pks(3);
-insect_23_ratio = harmonic_pks(2)/harmonic_pks(3);
-
-tree_12_ratio = tree_harmonic_pks(1)/tree_harmonic_pks(2);
-tree_13_ratio = tree_harmonic_pks(1)/tree_harmonic_pks(3);
-tree_23_ratio = tree_harmonic_pks(2)/tree_harmonic_pks(3);
-
-%%
-figure
-scatter(1:3, harmonic_locs(1:3), 'filled')
-hold on
-scatter(1:3, tree_harmonic_locs(1:3), 'filled')
-title('harmonic frequencies')
-legend('insect', 'tree')
-
-figure
-scatter(1:3, harmonic_widths(1:3), 'filled')
-hold on
-scatter(1:3, tree_harmonic_widths(1:3), 'filled')
-title('harmonic peak widths')
-legend('insect', 'tree')
-
-figure
-scatter(1:3, harmonic_prom(1:3), 'filled')
-hold on
-scatter(1:3, tree_harmonic_prom(1:3), 'filled')
-title('harmonic peak prominences')
-legend('insect', 'tree')
-
-figure
-scatter(1:3, harmonic_pks(1:3), 'filled')
-hold on
-scatter(1:3, tree_harmonic_pks(1:3), 'filled')
-title('harmonic peak heights')
-legend('insect', 'tree')
-
-figure
-scatter(1:3, [insect_12_ratio, insect_13_ratio, insect_23_ratio], 'filled')
-hold on
-scatter(1:3, [tree_12_ratio, tree_13_ratio, tree_23_ratio], 'filled')
-title('harmonic peak ratios')
-legend('insect', 'tree')
-xticklabels({'1/2', '', '1/3', '', '2/3'})
-
-%% Frequency domain features for all rows
-features = extractHarmonicFeatures(normalized_psd, 3);
+% insectpsd = normalized_psd(97,:);
+% treepsd = normalized_psd(160,:);
 
 
+
+% %% Find the fundamental frequency via the Harmonic Product Spectrum
+% % If I multiply 4 downsampled spectra, I get a fundamental of 17;
+% % when I use 3 downsampled spectra, I get a fundamental of 33.
+% insectpsd2 = insectpsd(1:2:end);
+% insectpsd3 = insectpsd(1:3:end);
+% insectpsd4 = insectpsd(1:4:end);
+% insecthps = insectpsd(1:numel(insectpsd3)) .* insectpsd2(1:numel(insectpsd3)) .* insectpsd3;
+
+% [~, fundamental_loc] = findpeaks(insecthps, 'NPeaks', 1, 'SortStr', 'descend');
+
+% treepsd2 = treepsd(1:2:end);
+% treepsd3 = treepsd(1:3:end);
+% treepsd4 = treepsd(1:4:end);
+% treehps = insectpsd(1:numel(treepsd3)) .* treepsd2(1:numel(treepsd3)) .* treepsd3;
+
+% [~, tree_fundamental_loc] = findpeaks(treehps, 'Npeaks', 1, 'SortStr', 'descend');
+
+% %% Find the harmonics
+% % Once we know what the fundamental frequency is, we can determine the
+% % harmonic locations as follows; due to noise, the harmonics will generally
+% % not be exactly at integer multiples of the fundmantal frequency bin,
+% % so we need to find peaks that are within a few frequency bins of an integer mutliple
+% [pks_insect, locs_insect, pkwidth_insect, pkprom_insect] = findpeaks(insectpsd);
+
+% bin_differences = locs_insect/fundamental_loc - fix(locs_insect/fundamental_loc);
+% nbins = 2;
+% tmp = find(1 - bin_differences <= nbins/fundamental_loc | bin_differences <= nbins/fundamental_loc);
+% harmonic_locs = locs_insect(tmp);
+% harmonic_widths = pkwidth_insect(tmp);
+% harmonic_prom = pkprom_insect(tmp);
+% harmonic_pks = pks_insect(tmp);
+
+% [pks_tree, locs_tree, pkwidth_tree, pkprom_tree] = findpeaks(treepsd);
+
+% bin_differences = locs_tree/tree_fundamental_loc - fix(locs_tree/tree_fundamental_loc);
+% nbins = 2;
+% tmp = find(1 - bin_differences <= nbins/tree_fundamental_loc | bin_differences <= nbins/tree_fundamental_loc);
+% tree_harmonic_locs = locs_tree(tmp);
+% tree_harmonic_widths = pkwidth_tree(tmp);
+% tree_harmonic_prom = pkprom_tree(tmp);
+% tree_harmonic_pks = pks_tree(tmp);
+
+% %% Ratios of harmonic peaks
+% insect_12_ratio = harmonic_pks(1)/harmonic_pks(2);
+% insect_13_ratio = harmonic_pks(1)/harmonic_pks(3);
+% insect_23_ratio = harmonic_pks(2)/harmonic_pks(3);
+
+% tree_12_ratio = tree_harmonic_pks(1)/tree_harmonic_pks(2);
+% tree_13_ratio = tree_harmonic_pks(1)/tree_harmonic_pks(3);
+% tree_23_ratio = tree_harmonic_pks(2)/tree_harmonic_pks(3);
+
+% %%
+% figure
+% scatter(1:3, harmonic_locs(1:3), 'filled')
+% hold on
+% scatter(1:3, tree_harmonic_locs(1:3), 'filled')
+% title('harmonic frequencies')
+% legend('insect', 'tree')
+
+% figure
+% scatter(1:3, harmonic_widths(1:3), 'filled')
+% hold on
+% scatter(1:3, tree_harmonic_widths(1:3), 'filled')
+% title('harmonic peak widths')
+% legend('insect', 'tree')
+
+% figure
+% scatter(1:3, harmonic_prom(1:3), 'filled')
+% hold on
+% scatter(1:3, tree_harmonic_prom(1:3), 'filled')
+% title('harmonic peak prominences')
+% legend('insect', 'tree')
+
+% figure
+% scatter(1:3, harmonic_pks(1:3), 'filled')
+% hold on
+% scatter(1:3, tree_harmonic_pks(1:3), 'filled')
+% title('harmonic peak heights')
+% legend('insect', 'tree')
+
+% figure
+% scatter(1:3, [insect_12_ratio, insect_13_ratio, insect_23_ratio], 'filled')
+% hold on
+% scatter(1:3, [tree_12_ratio, tree_13_ratio, tree_23_ratio], 'filled')
+% title('harmonic peak ratios')
+% legend('insect', 'tree')
+% xticklabels({'1/2', '', '1/3', '', '2/3'})
+
+%% extract features
+psdStats = extractPsdStats(normalized_psd);
+harmonicFeatures = extractHarmonicFeatures(normalized_psd, 3);
+
+features = [psdStats, harmonicFeatures];
 
 %% pairwise scatter plot of features
 labels = zeros(height(data), 1);
 labels(97) = 1;
 
-% concatenate features
-% features = cat(2, avg_psd, std_psd, median_psd, mad_psd, skew_psd, kurtosis_psd, ...
-%     energy90pct, energy90pct_no_dc, harmonic_locs, harmonic_pks, harmonic_pkwidth, ...
-%     harmonic_pkprom, harmonic_12_ratio, harmonic_13_ratio, harmonic_23_ratio);
-feature_names = fieldnames(features);
-feature_vals = cell2mat(struct2cell(features).');
-% feature_names = ["avg psd", "std psd", "median psd", "mad psd", "skew psd", ...
-%     "kurtosis psd", "90% energy", "90% energy no DC", "1st harmonic loc", ...
-%     "2nd harmonic loc", "3rd harmonic loc", "1st harmonic height", ...
-%     "2nd harmonic height", "3rd harmonic height", "1st harmonic width", ...
-%     "2nd harmonic width", "3rd harmonic width", "1st harmonic prominence", ...
-%     "2nd harmonic prominence", "3rd harmonic prominence", "1st / 2nd ratio", ...
-%     "1st / 3rd ratio", "2nd / 3rd ratio"];
-% feature_names = ["1st harmonic loc", ...
-    % "2nd harmonic loc", "3rd harmonic loc", "1st harmonic height", ...
-    % "2nd harmonic height", "3rd harmonic height", "1st harmonic width", ...
-    % "2nd harmonic width", "3rd harmonic width", "1st harmonic prominence", ...
-    % "2nd harmonic prominence", "3rd harmonic prominence", "1st / 2nd ratio", ...
-    % "1st / 3rd ratio", "2nd / 3rd ratio"];
-visualize_feature_distributions(feature_vals, labels, feature_names);
+featureMat = table2array(features);
+featureNames = features.Properties.VariableNames;
+
+visualize_feature_distributions(featureMat, labels, featureNames);
 
 %%
 figure
