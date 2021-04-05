@@ -1,4 +1,4 @@
-function [harmonicHeight, harmonicLoc, harmonicWidth, harmonicProminence, harmonicHeightRatio] = extractHarmonicFeatures(psd, nHarmonics)
+function features = extractHarmonicFeatures(psd, nHarmonics)
 % TODO: format output as a struct
 % TODO: make nBins an input parameter
 
@@ -48,9 +48,23 @@ for i = 1:nRows
 
         harmonicHeightRatio(i, n) = harmonicHeight(i, harmonic1) / harmonicHeight(1, harmonic2);
 
-        % TODO: implement other ratios
+        harmonicWidthRatio(i, n) = harmonicWidth(i ,harmonic1) / harmonicWidth(1, harmonic2);
+
+        harmonicProminenceRatio(i, n) = harmonicProminence(i ,harmonic1) / harmonicProminence(1, harmonic2);
     end
 end
 
+for n = 1:nHarmonics
+    features.(['HarmonicHeight' num2str(n)]) = harmonicHeight(:, n);
+    features.(['HarmonicLoc' num2str(n)]) = harmonicLoc(:, n);
+    features.(['HarmonicWidth' num2str(n)]) = harmonicWidth(:, n);
+    features.(['HarmonicProminence' num2str(n)]) = harmonicProminence(:, n);
+end
 
+for n = 1:nHarmonicCombinations
+    ratioStr = strrep(num2str(harmonicCombinations(n,:)), ' ', '');
+    features.(['HarmonicHeightRatio' ratioStr]) = harmonicHeightRatio(:, n);
+    features.(['HarmonicWidthRatio' ratioStr]) = harmonicWidthRatio(:, n);
+    features.(['HarmonicProminenceRatio' ratioStr]) = harmonicProminenceRatio(:, n);
+end
 end
