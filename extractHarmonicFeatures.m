@@ -1,5 +1,4 @@
 function features = extractHarmonicFeatures(psd, nHarmonics)
-% TODO: format output as a struct
 % TODO: make nBins an input parameter
 
 nBins = 2;
