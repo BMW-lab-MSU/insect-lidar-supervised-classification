@@ -46,15 +46,15 @@ close all
 load('InsectLidarDataTutorial/exampledata.mat')
 
 data = exampledata(1).normalized_data;
-% data = medfilt1(data, 10, [], 2);
-
-X = fft(data, [], 2);
-psd = abs(X).^2;
-psd = psd(:,1:end/2);
-
-normalized_psd = psd./psd(:,1);
-
-spectralphase = angle(X);
+% % data = medfilt1(data, 10, [], 2);
+% 
+% X = fft(data, [], 2);
+% psd = abs(X).^2;
+% psd = psd(:,1:end/2);
+% 
+% normalized_psd = psd./psd(:,1);
+% 
+% spectralphase = angle(X);
 
 
 % avg_psd = mean(psd, 2);
@@ -175,10 +175,7 @@ spectralphase = angle(X);
 % xticklabels({'1/2', '', '1/3', '', '2/3'})
 
 %% extract features
-psdStats = extractPsdStats(normalized_psd);
-harmonicFeatures = extractHarmonicFeatures(normalized_psd, 3);
-
-features = [psdStats, harmonicFeatures];
+features = extractFeatures(data);
 
 %% pairwise scatter plot of features
 labels = zeros(height(data), 1);
