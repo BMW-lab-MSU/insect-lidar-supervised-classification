@@ -12,13 +12,13 @@ peakLoc = cell(nRows, 1);
 peakWidth = cell(nRows, 1);
 peakProminence = cell(nRows, 1);
 
-harmonicHeight = zeros(nRows, nHarmonics);
-harmonicLoc = zeros(nRows, nHarmonics);
-harmonicWidth = zeros(nRows, nHarmonics);
-harmonicProminence = zeros(nRows, nHarmonics);
-harmonicHeightRatio = zeros(nRows, nHarmonicCombinations);
-harmonicWidthRatio = zeros(nRows, nHarmonicCombinations);
-harmonicProminenceRatio = zeros(nRows, nHarmonicCombinations);
+harmonicHeight = nan(nRows, nHarmonics);
+harmonicLoc = nan(nRows, nHarmonics);
+harmonicWidth = nan(nRows, nHarmonics);
+harmonicProminence = nan(nRows, nHarmonics);
+harmonicHeightRatio = nan(nRows, nHarmonicCombinations);
+harmonicWidthRatio = nan(nRows, nHarmonicCombinations);
+harmonicProminenceRatio = nan(nRows, nHarmonicCombinations);
 
 fundamental = estimateFundamentalFreq(psd);
 
@@ -35,10 +35,10 @@ for i = 1:nRows
         harmonicProminence(i,:) = peakProminence{i}(tmp(1:nHarmonics));
         harmonicHeight(i,:) = peakHeight{i}(tmp(1:nHarmonics));
     else
-        harmonicLoc(i,:) = [peakLoc{i}(tmp), nan(1, nHarmonics - numel(tmp))];
-        harmonicWidth(i,:) = [peakWidth{i}(tmp), nan(1, nHarmonics - numel(tmp))];
-        harmonicProminence(i,:) = [peakProminence{i}(tmp), nan(1, nHarmonics - numel(tmp))];
-        harmonicHeight(i,:) = [peakHeight{i}(tmp), nan(1, nHarmonics - numel(tmp))];
+        harmonicLoc(i,1:numel(tmp)) = peakLoc{i}(tmp);
+        harmonicWidth(i,1:numel(tmp)) = peakWidth{i}(tmp);
+        harmonicProminence(i,1:numel(tmp)) = peakProminence{i}(tmp);
+        harmonicHeight(i,1:numel(tmp)) = peakHeight{i}(tmp);
     end
     
     for n = 1:nHarmonicCombinations
