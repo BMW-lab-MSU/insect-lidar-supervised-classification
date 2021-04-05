@@ -53,6 +53,8 @@ for i = 1:nRows
     end
 end
 
+features = table;
+
 for n = 1:nHarmonics
     features.(['HarmonicHeight' num2str(n)]) = harmonicHeight(:, n);
     features.(['HarmonicLoc' num2str(n)]) = harmonicLoc(:, n);
