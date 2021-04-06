@@ -7,7 +7,7 @@ hold on
 
 for n = 1:numel(groups)
     histogram(X(G==groups(n)), ...
-        'Normalization', 'probability', 'BinWidth', range(X) / 50);
+        'Normalization', 'probability', 'BinWidth', range(X)/65);
 end
 hold off
 % legend(groups);

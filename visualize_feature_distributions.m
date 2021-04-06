@@ -2,14 +2,14 @@ function visualize_feature_distributions(features, labels, feature_names)
 
 groups = categorical(labels, [0, 1], {'Non-insect', 'Insect'});
 
-% plot properties
+% %plot properties
 % color = [[178,223,138]; [31,120,180]]/255;
-% color = [];
+% % color = [];
 % markers = 'od';
 % sizes = [];
 
 % figure
-% [h, ax, bigax] = gplotmatrix(features, [], group, color, markers, sizes, [], 'grpbars', feature_names);
+% [h, ax, bigax] = gplotmatrix(features, [], groups, color, markers, sizes, [], 'grpbars', feature_names);
 
 tlayout = tiledlayout('flow');
 
