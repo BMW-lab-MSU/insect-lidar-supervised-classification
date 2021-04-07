@@ -1,7 +1,7 @@
 %% setup
 % box_dir = 'C:/Users/kyler/Box/Data_2020_Insect_Lidar';
-box_dir = '../../Data_2020_Insect_Lidar';
-
+% box_dir = '../../Data_2020_Insect_Lidar';
+box_dir = '/Users/bmw/Box/Data_2020_Insect_Lidar';
 datapath = [box_dir '/' '2020-09-16'];
 
 % load labels
