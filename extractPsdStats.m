@@ -32,6 +32,6 @@ features.MedianPsd = median_psd;
 features.MadPsd = mad_psd;
 features.SkewnessPsd = skew_psd;
 features.KurtosisPsd = kurtosis_psd;
-features.Bin99PctEnergy = energy99pct;
+% features.Bin99PctEnergy = energy99pct;
 
 end
