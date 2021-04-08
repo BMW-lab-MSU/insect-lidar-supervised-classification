@@ -1,4 +1,11 @@
 function hps = harmonicProductSpectrum(spectrum, nSpectra)
+% harmonicProductSpectrum compute the harmonic product spectrum of a one-sided
+% spectrum or PSD
+%
+%   hps = harmonicProductSpectrum(spectrum, nSpectra) computes the haromnic
+%   product spectrum. spectrum is a one-sided magnitude spectrum or one-sided
+%   power spectral density. nSpectra determines the the number of spectral
+%   copies to use when computing the harmonic product spectrum.
 
 rows = height(spectrum);
 cols = floor(width(spectrum) / nSpectra);
