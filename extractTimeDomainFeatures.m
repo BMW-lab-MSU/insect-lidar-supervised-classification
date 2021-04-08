@@ -1,4 +1,15 @@
 function features = extractTimeDomainFeatures(X)
+% extractTimeDomainFeatures extract features from time-domain lidar images for
+% insect detection
+%
+%   features = extractTimeDomainFeatures(X) extracts features from the data
+%   matrix, X, and returns the features as a table. Observations are rows in X.
+%
+%   The extracted features are:
+%       'RowMeanMinusImageMean' - The mean of the obvservation minus the mean
+%                                 of the entire image
+%       'StdDev'                - The standard deviation of each row
+%       'MaxDiff'               - The maximum absolute first difference in a row
 
 rowMean = mean(X, 2);
 imageMean = mean(X(:));
