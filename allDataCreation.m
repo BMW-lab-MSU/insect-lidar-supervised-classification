@@ -19,10 +19,10 @@ x = 1;
 % Iterate through all of the files. Throw out non-insect-image
 % files/folders
 for i = 1:length(days)
-    temp_folders = {dir(strjoin([basefilepath days{i}],'\\')).name};
+    temp_folders = {dir(string([basefilepath '\' days{i}])).name};
     temp_folders = temp_folders(3:end-2);
     for j = 1:length(temp_folders)
-        temp_images = {dir(strjoin([basefilepath days{i} temp_folders{j}],'\\')).name};
+        temp_images = {dir(string([basefilepath '\' days{i} '\' temp_folders{j}])).name};
         temp_images = temp_images(3:end-1);
         for k = 1:length(temp_images)
             % Assign each day, folder, and image to the output structure
