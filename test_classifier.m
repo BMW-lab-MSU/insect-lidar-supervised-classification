@@ -1,6 +1,7 @@
 %% Setup data paths
 % box_dir = 'C:/Users/kyler/Box/Data_2020_Insect_Lidar';
-box_dir = '../../Data_2020_Insect_Lidar';
+% box_dir = '../../Data_2020_Insect_Lidar';
+box_dir = '/Users/bmw/Box/Data_2020_Insect_Lidar';
 
 datapaths = {
     [box_dir '/' '2020-07-21'];
@@ -14,7 +15,7 @@ datapaths = {
  };
 %disp('Loading Classifier: CoarseTree');
 trained_model_dir = '.';
-load([trained_model_dir '/' 'subspaceDiscriminant.mat']);
+load([trained_model_dir '/' 'linearSVM.mat']);
 
 results = containers.Map();
 
@@ -42,11 +43,15 @@ for datapaths_idx = 6:8   %:numel(datapaths)
         labels_mat = cell2mat(labels);
         labels_vec = labels_mat(:);
 
-        features = feature_extraction([datapath '/' sub_folders{files} '/' 'adjusted_data_decembercal']);
+        features = table;
+        for i = 1:numel(adjusted_data_decembercal)
+            tmp = extractFeatures(adjusted_data_decembercal(i).data);
+            features = [features; tmp];
+        end
         
         disp(['Classifying... ' sub_folders{files}])
         
-        pred_labels = logical(subspaceDiscriminant.predictFcn(features));
+        pred_labels = logical(linearSVM.predictFcn(table2array(features)));
         
         % turn predicted labels into a cell array, where each cell
         % corresponds to one image
