@@ -10,7 +10,7 @@ function labels = extract_labels(insects, datastruct)
 %   Example: labels = extract_labels(fftcheck.insects, adjusted_data_decembercal)
 
 [nrows, ncolumns] = size(datastruct(1).normalized_data);
-labels = cell(size(datastruct));
+labels = cell(flip(size(datastruct)));
 
 % by construction, the first part of the filename for all structs in 
 % datastruct (adjusted_data_decembercal) are the same folder name
