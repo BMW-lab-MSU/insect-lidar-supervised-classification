@@ -1,4 +1,4 @@
-function labels = extract_labels(insects, datastruct)
+function labels = extractLabels(insects, datastruct)
 % extract_labels Extract labels for a single data collection run
 %
 %   labels = extract_labels(insects, datastruct) returns a cell 
@@ -10,7 +10,7 @@ function labels = extract_labels(insects, datastruct)
 %   Example: labels = extract_labels(fftcheck.insects, adjusted_data_decembercal)
 
 [nrows, ncolumns] = size(datastruct(1).normalized_data);
-labels = cell(flip(size(datastruct)));
+labels = cell(numel(datastruct), 1);
 
 % by construction, the first part of the filename for all structs in 
 % datastruct (adjusted_data_decembercal) are the same folder name
@@ -20,7 +20,7 @@ folder_name = temp{1};
 % datastruct contains multiple images, each for a different pan/tilt angle
 % combination
 for image_num = 1:numel(datastruct)
-    image_labels = zeros(nrows, 1);
+    image_labels = false(nrows, 1);
 
     for insect_num = 1:numel(insects)
 
@@ -29,7 +29,7 @@ for image_num = 1:numel(datastruct)
             if insects(insect_num).filenum == image_num
                 % extract the range bin the insect was found in
                 % and label that row as a hit
-                image_labels(insects(insect_num).range) = 1;
+                image_labels(insects(insect_num).range) = true;
             end
         end
 
