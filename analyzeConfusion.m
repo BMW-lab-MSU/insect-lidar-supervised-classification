@@ -1,4 +1,4 @@
-function [accuracy, precision, recall, f3] = analyze_confusion(confmat)
+function [accuracy, precision, recall, f2] = analyzeConfusion(confmat)
 
 % confmat is a confusion matrix like so:
 %
@@ -18,6 +18,6 @@ TP = confmat(2,2);
 accuracy = (TP + TN)/(TP + TN + FP + FN);
 precision = (TP)/(TP + FP);
 recall = (TP)/(TP + FN);
-f3 = (1 + 3^2) * (precision * recall)/((3^2)*precision + recall);
+f2 = (1 + 2^2) * (precision * recall)/((2^2)*precision + recall);
 
 end
