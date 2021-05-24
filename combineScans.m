@@ -49,7 +49,9 @@ for i = 1:numel(days)
         scans(scanNum).Day = days(i);
         scans(scanNum).Id = scanIds{i}(j);
 
-        scans(scanNum).Data = {adjusted_data_decembercal.normalized_data}';
+        scans(scanNum).Data = cellfun(@(c) single(c), ...
+            {adjusted_data_decembercal.normalized_data}', ...
+            'UniformOutput', false);
 
         % Create label vectors
         labels = extractLabels(fftcheck.insects, adjusted_data_decembercal);
