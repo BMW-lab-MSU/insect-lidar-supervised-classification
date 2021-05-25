@@ -17,10 +17,10 @@ function remove = randomUndersample(labels, undersampleClass, opts)
 
 arguments
     labels (1,:) 
-    undersample_class (1,1)
+    undersampleClass (1,1)
     opts.UndersamplingRatio (1,1) double {mustBeInRange(opts.UndersamplingRatio, 0, 1)} = 0.75
     opts.Reproducible (1,1) logical = false
-    opts.Seed (1,1) uint32 {mustBeNonNegative} = 0
+    opts.Seed (1,1) uint32 {mustBeNonnegative} = 0
 end
 
 if opts.Reproducible
