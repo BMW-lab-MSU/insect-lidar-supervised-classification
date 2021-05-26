@@ -1,4 +1,4 @@
-function features = extractFeatures(X)
+function features = extractFeatures(X, opts)
 % extractFeatures extract features for insect detection
 %
 %   features = extractFeatures(X) extracts features from the data matrix, X,
@@ -29,8 +29,13 @@ function features = extractFeatures(X)
 %       'HarmonicWidthRatio'        - The ratio between harmonic widths
 %       'HarmonicProminenceRatio'   - The ratio between harmonic prominences
 
+arguments
+    X (:,:) {mustBeNumeric}
+    opts.UseParallel (1,1) logical = false
+end
+
 timeFeatures = extractTimeDomainFeatures(X);
-freqFeatures = extractFreqDomainFeatures(X);
+freqFeatures = extractFreqDomainFeatures(X, 'UseParallel', opts.UseParallel);
 
 features = [timeFeatures, freqFeatures];
 end

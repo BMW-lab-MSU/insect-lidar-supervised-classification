@@ -1,29 +1,41 @@
-function [newFeatures] = dataAugmentation(data, labels, nAugmented)
+function [newFeatures, labels] = dataAugmentation(data, labels, nAugmented, opts)
 
 arguments
     data (:,:) {mustBeNumeric}
     labels (:, 1) logical
     nAugmented (1,1) {mustBeNumeric, mustBeNonnegative}
+    opts.UseParallel (1,1) logical = false
+end
+
+if opts.UseParallel
+    nWorkers = gcp('nocreate').NumWorkers;
+else
+    nWorkers = 0;
 end
 
 insectIdx = find(labels == 1);
 
-synthData = createSyntheticData(data(insectIdx, :), nAugmented);
+synthData = createSyntheticData(data(insectIdx, :), nAugmented, nWorkers);
 
-newFeatures = extractFeatures(synthData);
+newFeatures = extractFeatures(synthData, 'UseParallel', opts.UseParallel);
+
+labels = true(height(newFeatures), 1);
 end
 
 
-function synthData = createSyntheticData(data, nAugmented)
+function synthData = createSyntheticData(data, nAugmented, nWorkers)
 N_VARIATIONS = 6;
 nInsects = height(data);
 
-synthData = zeros(nInsects * nAugmented, width(data), 'like', data);
+synthDataCell = cell(nInsects, 1);
 
-stop = 0;
-for i = 1:nInsects
+parfor (i = 1:nInsects, nWorkers)
+
+    synthDataTmp = zeros(nAugmented, width(data), 'like', data);
 
     insect = data(i,:);
+
+    stop = 0;
 
     for j = 1:ceil(nAugmented/N_VARIATIONS)
         variations = zeros(N_VARIATIONS, width(data), 'like', data);
@@ -51,23 +63,26 @@ for i = 1:nInsects
             start = stop + 1;
             stop = start + nAugmentedLeft - 1;
             
-            if stop > height(synthData)
-                stop = height(synthData)
+            if stop > height(synthDataTmp)
+                stop = height(synthDataTmp)
             end
             
-            synthData(start:stop, :) = variations(1:nAugmentedLeft, :);
+            synthDataTmp(start:stop, :) = variations(1:nAugmentedLeft, :);
         else
             start = stop + 1;
             stop = start + N_VARIATIONS - 1;
             
-            if stop > height(synthData)
-                stop = height(synthData)
+            if stop > height(synthDataTmp)
+                stop = height(synthDataTmp)
             end
             
-            synthData(start:stop, :) = variations;
+            synthDataTmp(start:stop, :) = variations;
         end
     end
+    synthDataCell{i} = synthDataTmp;
 end
+
+synthData = cell2mat(synthDataCell);
 end
 
 
@@ -82,10 +97,10 @@ end
 function y = decimate_(x)
     % decimate by 2
     if ~isa(class(x), 'double')
-        y = decimate(double(x), 2);
+        y = decimate(double(x), 2, 'FIR');
         y = cast(y, 'like', x);
     else
-        y = decimate(x, 2);
+        y = decimate(x, 2, 'FIR');
     end
 
 

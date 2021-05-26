@@ -1,4 +1,4 @@
-function features = extractFreqDomainFeatures(X)
+function features = extractFreqDomainFeatures(X, opts)
 % extractFreqDomainFeatures extract frequency-domain features for insect
 % detection
 %
@@ -23,6 +23,11 @@ function features = extractFreqDomainFeatures(X)
 %       'HarmonicWidthRatio'        - The ratio between harmonic widths
 %       'HarmonicProminenceRatio'   - The ratio between harmonic prominences
 
+arguments
+    X (:,:) {mustBeNumeric}
+    opts.UseParallel (1,1) logical = false
+end
+
 nHarmonics = 3;
 
 psd = abs(fft(X, [], 2).^2);
@@ -34,7 +39,7 @@ psd = psd(:,1:end/2);
 psd = psd./psd(:,1);
 
 psdStats = extractPsdStats(psd);
-harmonicFeatures = extractHarmonicFeatures(psd, nHarmonics);
+harmonicFeatures = extractHarmonicFeatures(psd, nHarmonics, 'UseParallel', opts.UseParallel);
 
 features = [psdStats, harmonicFeatures];
 end

@@ -1,4 +1,4 @@
-function features = extractHarmonicFeatures(psd, nHarmonics)
+function features = extractHarmonicFeatures(psd, nHarmonics, opts)
 % extractHarmonicFeatures extract features related to harmonics in the PSD.
 %
 %   features = extractHarmonicFeatures(psd, nHarmonics) extracts features from
@@ -17,6 +17,11 @@ function features = extractHarmonicFeatures(psd, nHarmonics)
 %       'HarmonicProminenceRatio'   - The ratio between harmonic prominences
 
 % TODO: make nBins an input parameter
+arguments
+    psd (:,:) {mustBeNumeric}
+    nHarmonics (1,1) double
+    opts.UseParallel (1,1) logical = false
+end
 
 nBins = 2;
 nRows = height(psd);
@@ -37,12 +42,20 @@ harmonicHeightRatio = nan(nRows, nHarmonicCombinations);
 harmonicWidthRatio = nan(nRows, nHarmonicCombinations);
 harmonicProminenceRatio = nan(nRows, nHarmonicCombinations);
 
-fundamental = estimateFundamentalFreq(psd);
+fundamental = estimateFundamentalFreq(psd, 'UseParallel', opts.UseParallel);
 
-for i = 1:nRows
+if opts.UseParallel
+    nWorkers = gcp('nocreate').NumWorkers;
+else
+    nWorkers = 0;
+end
+
+parfor (i = 1:nRows, nWorkers)
     % Get features for all peaks
     [peakHeight{i}, peakLoc{i}, peakWidth{i}, peakProminence{i}] = findpeaks(psd(i,:));
+end
 
+for i = 1:nRows
     % Compute how close the each peaks' frequency bin is to being an integer
     % multiple of the fundamental frequency.
     % TODO: I think this could be done with rem()
