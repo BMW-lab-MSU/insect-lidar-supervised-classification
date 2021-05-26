@@ -1,6 +1,7 @@
-function result = tune_sampling_roi_base(fitcfun, data, labels, scanLabel, crossvalPartition, opts)
+function result = tuneSamplingBase(fitcfun, features, data, labels, scanLabel, crossvalPartition, opts)
 arguments
     fitcfun (1,1) function_handle
+    features (:,1) cell
     data (:,1) cell
     labels (:,1) cell
     scanLabel (:,1) logical
@@ -13,9 +14,13 @@ end
 name = functions(fitcfun).function;
 
 % Create the grid
-undersampling = 0:0.05:0.95;
+undersampling = 0:1.1:0.1;
+nAugmented = linspace(1, 10e3, 2);
+[under, augment] = ndgrid(undersampling, nAugmented);
+under = reshape(under, 1, numel(under));
+augment = reshape(augment, 1, numel(augment));
 
-GRID_SIZE = numel(undersampling);
+GRID_SIZE = numel(under);
 
 % Preallocate data structures for grid search results
 objective = zeros(1, GRID_SIZE);
@@ -32,7 +37,7 @@ if opts.Progress
 end
 
 % Training
-disp([name, ': undersampling grid search'])
+disp([name, ': grid search'])
 
 if opts.Progress
     progressbar.setup([],[],[]);
@@ -42,8 +47,8 @@ if opts.UseParallel
     parfor i = 1:GRID_SIZE
         maxNumCompThreads(opts.NumThreads);
 
-        [objective(i), ~, userdata{i}] = cvobjfun(fitcfun, [], ...
-            undersampling(i), crossvalPartition, data, labels, scanLabel);
+        [objective(i), ~, userdata{i}] = cvobjfun(fitcfun, [], under(i), ...
+            augment(i), crossvalPartition, features, data, labels, scanLabel);
         
         if opts.Progress
             updateParallel([], pwd);
@@ -51,8 +56,8 @@ if opts.UseParallel
     end
 else
     for i = 1:GRID_SIZE
-        [objective(i), ~, userdata{i}] = cvobjfun(fitcfun, [], ...
-            undersampling(i), crossvalPartition, data, labels, ...
+        [objective(i), ~, userdata{i}] = cvobjfun(fitcfun, [], under(i), ...
+            augment(i), crossvalPartition, features, data, labels, ...
             scanLabel, 'Progress', opts.Progress);
 
         if opts.Progress
@@ -68,5 +73,6 @@ end
 % Find the undersampling ratio that resulted in the maximum f2 score
 result.objective = objective;
 result.userdata = userdata;
-[minf2, minf2idx] = min(result.objective);
-result.undersamplingRatio = undersampling(minf2idx);
+[~, minIdx] = min(result.objective);
+result.undersamplingRatio = under(minIdx);
+result.nAugment = augment(minIdx);

@@ -29,10 +29,10 @@ TEST_PCT = 0.2;
 holdoutPartition = cvpartition(scanLabels, 'Holdout', TEST_PCT, 'Stratify', true);
 
 
-% trainingData = {scans(training(holdoutPartition)).Data}';
-% testingData = {scans(test(holdoutPartition)).Data}';
-trainingData = scanFeatures(training(holdoutPartition));
-testingData = scanFeatures(test(holdoutPartition));
+trainingData = {scans(training(holdoutPartition)).Data}';
+testingData = {scans(test(holdoutPartition)).Data}';
+trainingFeatures = scanFeatures(training(holdoutPartition));
+testingFeatures = scanFeatures(test(holdoutPartition));
 trainingLabels = labels(training(holdoutPartition));
 testingLabels = labels(test(holdoutPartition));
 
@@ -46,9 +46,10 @@ crossvalPartition = cvpartition(scanLabels(training(holdoutPartition)), ...
 %% Save training and testing data
 mkdir(datadir, 'testing');
 save([datadir filesep 'testing' filesep 'testingData.mat'], ...
-    'testingData', 'testingLabels', 'holdoutPartition', 'scanLabels', '-v7.3');
+    'testingData', 'testingFeatures', 'testingLabels', ...
+    'holdoutPartition', 'scanLabels', '-v7.3');
 
 mkdir(datadir, 'training');
 save([datadir filesep 'training' filesep 'trainingData.mat'], ...
-    'trainingData', 'trainingLabels', 'crossvalPartition', ...
-    'holdoutPartition', 'scanLabels', '-v7.3');
+    'trainingData', 'trainingFeatures', 'trainingLabels', ...
+    'crossvalPartition', 'holdoutPartition', 'scanLabels', '-v7.3');
