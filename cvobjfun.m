@@ -91,5 +91,5 @@ objective = -mcc;
 constraints = [];
 
 userdata.confusion = crossvalConfusion;
-userdata.model = models
+userdata.model = models;
 end
