@@ -14,8 +14,8 @@ end
 name = functions(fitcfun).function;
 
 % Create the grid
-undersampling = 0.1:0.1:0.1;
-nAugmented = [1024];
+undersampling = linspace(0, 0.9, 7);
+nAugmented = linspace(0, 1500, 7);
 [under, augment] = ndgrid(undersampling, nAugmented);
 under = reshape(under, 1, numel(under));
 augment = reshape(augment, 1, numel(augment));
@@ -51,7 +51,7 @@ if opts.Progress
     progressbar.release();
 end
 
-% Find the undersampling ratio that resulted in the maximum f2 score
+% Find the undersampling ratio that resulted in the minimum objective
 result.objective = objective;
 result.userdata = userdata;
 [~, minIdx] = min(result.objective);
