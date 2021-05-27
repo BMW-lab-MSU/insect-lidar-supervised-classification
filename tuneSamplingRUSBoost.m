@@ -1,7 +1,7 @@
 %% Setup
 rng(0, 'twister');
 
-datadir = '/home/trevor/research/afrl/data/Data_2020_Insect_Lidar/MLSP-2021';
+datadir = '../data/MLSP-2021';
 
 if isempty(gcp('nocreate'))
     parpool();
@@ -15,7 +15,7 @@ result = tuneSamplingBase(@rusboost, trainingFeatures, trainingData, ...
     trainingLabels, scanLabels, crossvalPartition, ...
     'Progress', true, 'UseParallel', true);
 
-save([datadir filesep 'training' filesep 'samplingTuningAdaboost.mat'], 'result')
+save([datadir filesep 'training' filesep 'samplingTuningRUSBoost.mat'], 'result')
 
 %% Model fitting function
 function model = rusboost(data, labels, ~)
