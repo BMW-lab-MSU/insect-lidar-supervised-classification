@@ -1,0 +1,56 @@
+%% Setup
+rng(0, 'twister');
+
+datadir = '/home/trevor/research/afrl/data/Data_2020_Insect_Lidar/MLSP-2021';
+
+if isempty(gcp('nocreate'))
+    parpool();
+end
+
+%% Load data
+load([datadir filesep 'training' filesep 'trainingData.mat']);
+
+load([box_dir filesep 'training' filesep 'tuneSamplingRUSBoost'])
+undersamplingRatio = result.undersamplingRatio
+nAugment = result.nAugment
+min(result.objective)
+clear result
+
+%% Tune rusboost hyperparameters
+nObservations = height(nestedcell2mat(trainingFeatures));
+
+optimizeVars = [
+   optimizableVariable('NumLearningCycles',[10, 500], 'Type', 'integer', 'Transform','log'),...
+   optimizableVariable('LearnRate',[1e-3, 1], 'Transform','log'),...
+   optimizableVariable('fncost', [1 20], 'Type', 'integer')
+   optimizableVariable('MaxNumSplits',[1, nObservations - 1],'Transform','log', 'Type', 'integer'),...
+   optimizableVariable('MinLeafSize',[1 floor(nObservations/2)],'Transform','log', 'Type', 'integer'),...
+   optimizableVariable('SplitCriterion', {'gdi', 'deviance'}),...
+];
+
+minfun = @(hyperparams)cvobjfun(@rusboost, hyperparams, ...
+    undersamplingRatio, nAugment, crossvalPartition, trainingFeatures, ...
+    trainingData, trainingLabels, scanLabels, 'UseParallel', true);
+
+results = bayesopt(minfun, optimize_vars, ...
+    'IsObjectiveDeterministic', true, 'UseParallel', false, ...
+    'AcquisitionFunctionName', 'expected-improvement-plus', ...
+    'MaxObjectiveEvaluations', 25);
+
+bestParams = bestPoint(results);
+
+save([box_dir filesep 'training' filesep 'tuneHyperparametersRUSBoost.mat'],...
+    'results', 'bestParams');
+
+%% Model fitting function
+function model = rusboost(data, labels, params)
+    t = templateTree('Reproducible',true, ...
+       'MaxNumSplits', params.MaxNumSplits, ...
+       'MinLeafSize', params.MinLeafSize, ...
+       'SplitCriterion', char(params.SplitCriterion));
+
+    model = compact(fitcensemble(data, labels, 'Method', 'RUSBoost', ...
+       'Learners', t, 'Cost', [0 1; params.fncost 0], ...
+       'NumLearningCycles', params.NumLearningCycles, ...
+       'LearnRate', params.LearnRate));
+end
