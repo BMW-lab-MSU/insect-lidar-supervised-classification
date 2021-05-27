@@ -1,7 +1,7 @@
 %% Setup
 rng(0, 'twister');
 
-datadir = '/home/trevor/research/afrl/data/Data_2020_Insect_Lidar/MLSP-2021';
+datadir = '../data//MLSP-2021';
 
 if isempty(gcp('nocreate'))
     parpool();
@@ -10,7 +10,7 @@ end
 %% Load data
 load([datadir filesep 'training' filesep 'trainingData.mat']);
 
-load([box_dir filesep 'training' filesep 'tuneSamplingRUSBoost'])
+load([datadir filesep 'training' filesep 'samplingTuningRUSBoost'])
 undersamplingRatio = result.undersamplingRatio
 nAugment = result.nAugment
 min(result.objective)
@@ -30,16 +30,17 @@ optimizeVars = [
 
 minfun = @(hyperparams)cvobjfun(@rusboost, hyperparams, ...
     undersamplingRatio, nAugment, crossvalPartition, trainingFeatures, ...
-    trainingData, trainingLabels, scanLabels, 'UseParallel', true);
+    trainingData, trainingLabels, scanLabels, 'UseParallel', true, ...
+    'Progress', true);
 
-results = bayesopt(minfun, optimize_vars, ...
+results = bayesopt(minfun, optimizeVars, ...
     'IsObjectiveDeterministic', true, 'UseParallel', false, ...
     'AcquisitionFunctionName', 'expected-improvement-plus', ...
     'MaxObjectiveEvaluations', 25);
 
 bestParams = bestPoint(results);
 
-save([box_dir filesep 'training' filesep 'tuneHyperparametersRUSBoost.mat'],...
+save([datadir filesep 'training' filesep 'hyperparameterTuningRUSBoost.mat'],...
     'results', 'bestParams');
 
 %% Model fitting function
