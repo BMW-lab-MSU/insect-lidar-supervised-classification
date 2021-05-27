@@ -11,9 +11,14 @@ arguments
     labels (:,1) cell
     scanLabel (:,1) logical
     opts.Progress (1,1) logical = false
+    opts.UseParallel (1,1) logical = false
 end
 
 MINORITY_LABEL = 0;
+
+if opts.UseParallel
+    statset('UseParallel', true);
+end
 
 crossvalConfusion = zeros(2, 2, crossvalPartition.NumTestSets);
 % losses = nan(1, crossvalPartition.NumTestSets);
@@ -55,7 +60,7 @@ for i = 1:crossvalPartition.NumTestSets
 
     % Create synthetic features
     [synthFeatures, synthLabels] = dataAugmentation(trainingData, ...
-        trainingLabels, nAugment);
+        trainingLabels, nAugment, 'UseParallel', opts.UseParallel);
     trainingFeatures = vertcat(trainingFeatures, synthFeatures);
     trainingLabels = vertcat(trainingLabels, synthLabels);
     clear('synthFeatures', 'synthLabels');

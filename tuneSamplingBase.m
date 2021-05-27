@@ -14,8 +14,8 @@ end
 name = functions(fitcfun).function;
 
 % Create the grid
-undersampling = 0:1.1:0.1;
-nAugmented = linspace(1, 10e3, 2);
+undersampling = 0.1:0.1:0.1;
+nAugmented = [1024];
 [under, augment] = ndgrid(undersampling, nAugmented);
 under = reshape(under, 1, numel(under));
 augment = reshape(augment, 1, numel(augment));
@@ -27,13 +27,7 @@ objective = zeros(1, GRID_SIZE);
 userdata = cell(1, GRID_SIZE);
 
 if opts.Progress
-    if opts.UseParallel
-        progressbar = ProgressBar(GRID_SIZE, ...
-            'IsParallel', true, 'WorkerDirectory', pwd(), ...
-            'Title', 'Grid search');
-    else
-        progressbar = ProgressBar(GRID_SIZE, 'Title', 'Grid search');
-    end
+    progressbar = ProgressBar(GRID_SIZE, 'Title', 'Grid search');
 end
 
 % Training
@@ -43,26 +37,13 @@ if opts.Progress
     progressbar.setup([],[],[]);
 end
 
-if opts.UseParallel
-    parfor i = 1:GRID_SIZE
-        maxNumCompThreads(opts.NumThreads);
+for i = 1:GRID_SIZE
+    [objective(i), ~, userdata{i}] = cvobjfun(fitcfun, [], under(i), ...
+        augment(i), crossvalPartition, features, data, labels, ...
+        scanLabel, 'Progress', opts.Progress, 'UseParallel', opts.UseParallel);
 
-        [objective(i), ~, userdata{i}] = cvobjfun(fitcfun, [], under(i), ...
-            augment(i), crossvalPartition, features, data, labels, scanLabel);
-        
-        if opts.Progress
-            updateParallel([], pwd);
-        end
-    end
-else
-    for i = 1:GRID_SIZE
-        [objective(i), ~, userdata{i}] = cvobjfun(fitcfun, [], under(i), ...
-            augment(i), crossvalPartition, features, data, labels, ...
-            scanLabel, 'Progress', opts.Progress);
-
-        if opts.Progress
-            progressbar([], [], []);
-        end
+    if opts.Progress
+        progressbar([], [], []);
     end
 end
 
