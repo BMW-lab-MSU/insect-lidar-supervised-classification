@@ -40,8 +40,10 @@ results = bayesopt(minfun, optimizeVars, ...
 
 bestParams = bestPoint(results);
 
+sum(results.UserDataTrace{results.IndexOfMinimumTrace(end)}.confusion,3)
+
 save([datadir filesep 'training' filesep 'hyperparameterTuningAdaboost.mat'],...
-    'results', 'bestParams');
+    'results', 'bestParams', '-v7.3');
 
 %% Model fitting function
 function model = adaboost(data, labels, params)
