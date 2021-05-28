@@ -1,5 +1,5 @@
 %% Setup
-rng(0, 'twister');
+rng(1, 'twister');
 
 datadir = '../data//MLSP-2021';
 
@@ -40,8 +40,10 @@ results = bayesopt(minfun, optimizeVars, ...
 
 bestParams = bestPoint(results);
 
+sum(results.UserDataTrace{results.IndexOfMinimumTrace(end)}.confusion,3)
+
 save([datadir filesep 'training' filesep 'hyperparameterTuningRUSBoost.mat'],...
-    'results', 'bestParams');
+    'results', 'bestParams', '-v7.3');
 
 %% Model fitting function
 function model = rusboost(data, labels, params)
