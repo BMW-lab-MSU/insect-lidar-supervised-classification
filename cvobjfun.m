@@ -85,11 +85,13 @@ if opts.Progress
     progressbar.release();
 end
 
-[~, ~, ~, ~, mcc] = analyzeConfusion(sum(crossvalConfusion, 3));
-objective = -mcc;
+[~, ~, ~, f2, mcc] = analyzeConfusion(sum(crossvalConfusion, 3));
+objective = -f2;
 
 constraints = [];
 
 userdata.confusion = crossvalConfusion;
 userdata.model = models;
+userdata.f2 = f2;
+userdata.mcc = mcc;
 end
