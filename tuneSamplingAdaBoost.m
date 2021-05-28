@@ -15,6 +15,10 @@ result = tuneSamplingBase(@adaboost, trainingFeatures, trainingData, ...
     trainingLabels, scanLabels, crossvalPartition, ...
     'Progress', true, 'UseParallel', true);
 
+min(result.objective)
+result.undersamplingRatio
+result.nAugment
+
 save([datadir filesep 'training' filesep 'samplingTuningAdaboost.mat'], 'result')
 
 %% Model fitting function
