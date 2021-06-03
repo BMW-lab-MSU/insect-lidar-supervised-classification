@@ -1,5 +1,5 @@
 %% Setup
-rng(1, 'twister');
+rng(2, 'twister');
 
 datadir = '../data//MLSP-2021';
 
@@ -13,7 +13,8 @@ load([datadir filesep 'training' filesep 'trainingData.mat']);
 load([datadir filesep 'training' filesep 'samplingTuningRUSBoost'])
 undersamplingRatio = result.undersamplingRatio
 nAugment = result.nAugment
-min(result.objective)
+[m,i]=min(result.objective)
+sum(result.userdata{i}.confusion,3)
 clear result
 
 %% Tune rusboost hyperparameters
