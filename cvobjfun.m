@@ -23,6 +23,7 @@ end
 crossvalConfusion = zeros(2, 2, crossvalPartition.NumTestSets);
 % losses = nan(1, crossvalPartition.NumTestSets);
 models = cell(1, crossvalPartition.NumTestSets);
+predLabels = cell(1, crossvalPartition.NumTestSets);
 
 if opts.Progress
     progressbar = ProgressBar(crossvalPartition.NumTestSets, ...
@@ -69,10 +70,10 @@ for i = 1:crossvalPartition.NumTestSets
     models{i} = fitcfun(trainingFeatures, trainingLabels, hyperparams);
 
     % Predict labels on the validation set
-    predLabels = predict(models{i}, testingFeatures);
+    predLabels{i} = predict(models{i}, testingFeatures);
 
     % Compute performance metrics
-    crossvalConfusion(:, :, i) = confusionmat(testingLabels, predLabels);
+    crossvalConfusion(:, :, i) = confusionmat(testingLabels, predLabels{i});
 
     % losses(i) = loss(models{i}, testingData, testingLabels, 'loss', @focalLoss);
     
@@ -94,4 +95,5 @@ userdata.confusion = crossvalConfusion;
 userdata.model = models;
 userdata.f2 = f2;
 userdata.mcc = mcc;
+userdata.predLabels = predLabels;
 end
