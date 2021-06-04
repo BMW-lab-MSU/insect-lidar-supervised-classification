@@ -1,7 +1,7 @@
 %% Setup
 rng(0, 'twister');
 
-datadir = 'D:\afrl\Box Sync\Data_2020_Insect_Lidar\MLSP-2021';
+datadir = '../data/Data_2020_Insect_Lidar/MLSP-2021';
 
 if isempty(gcp('nocreate'))
     parpool();
@@ -19,7 +19,7 @@ clear result
 %% Tune nnet hyperparameters
 nObservations = height(nestedcell2mat(trainingFeatures));
 
-optimize_vars = [
+optimizeVars = [
    optimizableVariable('LayerSizes',[10,50], 'Type', 'integer'),...
    optimizableVariable('Lambda',1/nObservations * [1e-2,1e2]),...
    optimizableVariable('activations', {'relu', 'tanh', 'sigmoid'}),...
@@ -47,5 +47,5 @@ function model = nnet(data, labels, params)
     model = compact(fitcnet(data, labels, 'Standardize', true, ...
         'LayerSizes', params.LayerSizes, ...
         'Activations', char(params.activations), ...
-        'Lambda', prams.Lambda));
+        'Lambda', params.Lambda));
 end
