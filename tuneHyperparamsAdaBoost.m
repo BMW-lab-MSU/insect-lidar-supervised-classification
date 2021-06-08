@@ -1,7 +1,7 @@
 %% Setup
 rng(0, 'twister');
 
-datadir = 'D:\afrl\Box Sync\Data_2020_Insect_Lidar\MLSP-2021';
+datadir = '/home/trevor/research/afrl/data/Data_2020_Insect_Lidar/MLSP-2021';
 
 if isempty(gcp('nocreate'))
     parpool();
