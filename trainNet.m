@@ -7,7 +7,7 @@ datadir = '/home/trevor/research/afrl/data/Data_2020_Insect_Lidar/MLSP-2021';
 load([datadir filesep 'training' filesep 'trainingData.mat']);
 
 load([datadir filesep 'training' filesep 'samplingTuningNet'])
-load([datadir filesep 'training' filesep 'hyperparameterTuningNet'])
+load([datadir filesep 'training' filesep 'hyperparameterTuningNet'], 'bestParams')
 undersamplingRatio = result.undersamplingRatio
 nAugment = result.nAugment
 params = bestParams
