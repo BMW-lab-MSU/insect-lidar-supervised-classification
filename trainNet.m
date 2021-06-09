@@ -1,0 +1,51 @@
+%% Setup
+rng(0, 'twister');
+
+datadir = '/home/trevor/research/afrl/data/Data_2020_Insect_Lidar/MLSP-2021';
+
+%% Load data
+load([datadir filesep 'training' filesep 'trainingData.mat']);
+
+load([datadir filesep 'training' filesep 'samplingTuningNet'])
+load([datadir filesep 'training' filesep 'hyperparameterTuningNet'])
+undersamplingRatio = result.undersamplingRatio
+nAugment = result.nAugment
+params = bestParams
+clear result
+
+%% Undersample the majority class
+idxRemove = randomUndersample(...
+    scanLabel(trainingSet), MINORITY_LABEL, ...
+    'UndersamplingRatio', undersamplingRatio, ...
+    'Reproducible', true);
+
+trainingFeatures(idxRemove) = [];
+trainingData(idxRemove) = [];
+trainingLabels(idxRemove) = [];
+
+%% Un-nest data/labels
+data = nestedcell2mat(trainingData);
+features = nestedcell2mat(trainingFeatures);
+labels = nestedcell2mat(trainingLabels);
+
+%% Create synthetic features
+[synthFeatures, synthLabels] = dataAugmentation(data, ...
+    labels, nAugment, 'UseParallel', true);
+
+features = vertcat(features, synthFeatures);
+labels = vertcat(labels, synthLabels);
+clear('synthFeatures', 'synthLabels');
+
+%% Train the model
+model = nnet(features, labels, params);
+
+mkdir([datadir filesep 'training' filesep ' models']);
+save([datadir filesep 'training' filesep 'models' filesep 'nnet'], 'model');
+
+%% Model fitting function
+function model = nnet(data, labels, params)
+    model = compact(fitcnet(data, labels, 'Standardize', true, ...
+        'LayerSizes', params.LayerSizes, ...
+        'Activations', char(params.activations), ...
+        'Lambda', params.Lambda));
+end
