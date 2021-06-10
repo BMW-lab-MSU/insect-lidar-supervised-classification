@@ -3,6 +3,11 @@ rng(0, 'twister');
 
 datadir = '/home/trevor/research/afrl/data/Data_2020_Insect_Lidar/MLSP-2021';
 
+if isempty(gcp('nocreate'))
+	parpool();
+end
+statset('UseParallel', true);
+
 %% Load data
 load([datadir filesep 'training' filesep 'trainingData.mat']);
 
@@ -15,7 +20,7 @@ clear result
 
 %% Undersample the majority class
 idxRemove = randomUndersample(...
-    scanLabels, MINORITY_LABEL, ...
+    scanLabels(training(holdoutPartition)), 0, ...
     'UndersamplingRatio', undersamplingRatio, ...
     'Reproducible', true);
 
@@ -39,7 +44,7 @@ clear('synthFeatures', 'synthLabels');
 %% Train the model
 model = nnet(features, labels, params);
 
-mkdir([datadir filesep 'training' filesep ' models']);
+mkdir([datadir filesep 'training' filesep 'models']);
 save([datadir filesep 'training' filesep 'models' filesep 'nnet'], 'model');
 
 %% Model fitting function
