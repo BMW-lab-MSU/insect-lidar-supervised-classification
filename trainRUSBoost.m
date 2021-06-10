@@ -1,7 +1,10 @@
 %% Setup
 rng(0, 'twister');
 
-datadir = '/home/trevor/research/afrl/data/Data_2020_Insect_Lidar/MLSP-2021';
+datadir = '../data/Data_2020_Insect_Lidar/MLSP-2021';
+
+parpool();
+statset('UseParallel', true);
 
 %% Load data
 load([datadir filesep 'training' filesep 'trainingData.mat']);
@@ -15,7 +18,7 @@ clear result
 
 %% Undersample the majority class
 idxRemove = randomUndersample(...
-    scanLabels, MINORITY_LABEL, ...
+    scanLabels(training(holdoutPartition)), 0, ...
     'UndersamplingRatio', undersamplingRatio, ...
     'Reproducible', true);
 
