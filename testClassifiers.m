@@ -141,4 +141,4 @@ disp(nnet.Image.Confusion)
 disp(nnet.Image)
 
 %% Save results
-save([datadir filesep 'testing' filesep 'results'], 'adaBoost, rusBoost', 'nnet');
+save([datadir filesep 'testing' filesep 'results'], 'adaBoost', 'rusBoost', 'nnet');
