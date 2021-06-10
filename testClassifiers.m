@@ -5,11 +5,10 @@ datadir = '../data/Data_2020_Insect_Lidar/MLSP-2021';
 
 %% Load data
 load([datadir filesep 'scans.mat']);
+load([datadir filesep 'testing' filesep 'testingData.mat']);
 
 imageLabels = vertcat(scans(test(holdoutPartition)).ImageLabels);
 clear scans
-
-load([datadir filesep 'testing' filesep 'testingData.mat']);
 
 features = nestedcell2mat(testingFeatures);
 labels = nestedcell2mat(testingLabels);
@@ -38,7 +37,7 @@ adaBoost.Row.MCC = mcc;
 %%%%%%%%%%%%%%%%%%
 % image results
 %%%%%%%%%%%%%%%%%%
-adaBoost.Image.Confusion = imageConfusion(adaBoost.Row.PredLabels, labels, holdoutPartition);
+adaBoost.Image.Confusion = imageConfusion(adaBoost.Row.PredLabels, testingLabels, holdoutPartition);
 
 [a, p, r, f2, mcc] = analyzeConfusion(adaBoost.Image.Confusion);
 adaBoost.Image.Accuracy = a;
