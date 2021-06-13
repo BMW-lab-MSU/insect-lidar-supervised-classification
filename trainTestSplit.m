@@ -7,6 +7,10 @@ rng(0, 'twister');
 datadir = '/home/trevor/research/afrl/data/Data_2020_Insect_Lidar/MLSP-2021';
 datafile = 'scans.mat';
 
+if isempty(gcp('nocreate'))
+    parpool();
+end
+
 %% Load data
 load([datadir filesep datafile])
 
@@ -15,7 +19,7 @@ load([datadir filesep datafile])
 scanFeatures = cell(numel(scans), 1);
 
 for i = progress(1:numel(scans))
-    scanFeatures{i} = cellfun(@(X) extractFeatures(X), scans(i).Data, ...
+    scanFeatures{i} = cellfun(@(X) extractFeatures(X, 'UseParallel', true), scans(i).Data, ...
         'UniformOutput', false);
 end
 
@@ -45,11 +49,11 @@ crossvalPartition = cvpartition(scanLabels(training(holdoutPartition)), ...
 
 %% Save training and testing data
 mkdir(datadir, 'testing');
-save([datadir filesep 'testing' filesep 'testingData.mat'], ...
+save([datadir filesep 'testing' filesep 'testingDataMRMR.mat'], ...
     'testingData', 'testingFeatures', 'testingLabels', ...
     'holdoutPartition', 'scanLabels', '-v7.3');
 
 mkdir(datadir, 'training');
-save([datadir filesep 'training' filesep 'trainingData.mat'], ...
+save([datadir filesep 'training' filesep 'trainingDataMRMR.mat'], ...
     'trainingData', 'trainingFeatures', 'trainingLabels', ...
     'crossvalPartition', 'holdoutPartition', 'scanLabels', '-v7.3');
