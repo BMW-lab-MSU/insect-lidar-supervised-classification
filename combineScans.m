@@ -73,5 +73,5 @@ for i = 1:numel(days)
     end
 end
 
-save('scans', 'scans', '-v7.3');
+save('scansMRMR', 'scans', '-v7.3');
 toc
