@@ -8,7 +8,7 @@ if isempty(gcp('nocreate'))
 end
 
 %% Load data
-load([datadir filesep 'training' filesep 'trainingData.mat']);
+load([datadir filesep 'training' filesep 'trainingDataMRMR.mat']);
 
 %% Tune sampling ratios
 result = tuneSamplingBase(@adaboost, trainingFeatures, trainingData, ...
@@ -19,7 +19,7 @@ min(result.objective)
 result.undersamplingRatio
 result.nAugment
 
-save([datadir filesep 'training' filesep 'samplingTuningAdaboost.mat'], 'result')
+save([datadir filesep 'training' filesep 'samplingTuningAdaboostMRMR.mat'], 'result')
 
 %% Model fitting function
 function model = adaboost(data, labels, ~)

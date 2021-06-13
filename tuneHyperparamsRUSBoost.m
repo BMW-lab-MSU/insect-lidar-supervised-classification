@@ -8,9 +8,9 @@ if isempty(gcp('nocreate'))
 end
 
 %% Load data
-load([datadir filesep 'training' filesep 'trainingData.mat']);
+load([datadir filesep 'training' filesep 'trainingDataMRMR.mat']);
 
-load([datadir filesep 'training' filesep 'samplingTuningRUSBoost'])
+load([datadir filesep 'training' filesep 'samplingTuningRUSBoostMRMR'])
 undersamplingRatio = result.undersamplingRatio
 nAugment = result.nAugment
 [m,i]=min(result.objective)
@@ -41,9 +41,10 @@ results = bayesopt(minfun, optimizeVars, ...
 
 bestParams = bestPoint(results);
 
-sum(results.UserDataTrace{results.IndexOfMinimumTrace(end)}.confusion,3)
+conf = sum(results.UserDataTrace{results.IndexOfMinimumTrace(end)}.confusion,3)
+[a, p, r, f2, mcc] = analyzeConfusion(conf)
 
-save([datadir filesep 'training' filesep 'hyperparameterTuningRUSBoost.mat'],...
+save([datadir filesep 'training' filesep 'hyperparameterTuningRUSBoostMRMR.mat'],...
     'results', 'bestParams', '-v7.3');
 
 %% Model fitting function

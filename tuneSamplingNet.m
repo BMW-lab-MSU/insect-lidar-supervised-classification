@@ -8,7 +8,7 @@ if isempty(gcp('nocreate'))
 end
 
 %% Load data
-load([datadir filesep 'training' filesep 'trainingData.mat']);
+load([datadir filesep 'training' filesep 'trainingDataMRMR.mat']);
 
 %% Tune sampling ratios
 result = tuneSamplingBase(@nnet, trainingFeatures, trainingData, ...
@@ -19,7 +19,7 @@ min(result.objective)
 result.undersamplingRatio
 result.nAugment
 
-save([datadir filesep 'training' filesep 'samplingTuningNet.mat'], 'result')
+save([datadir filesep 'training' filesep 'samplingTuningNetMRMR.mat'], 'result')
 
 %% Model fitting function
 function model = nnet(data, labels, ~)
