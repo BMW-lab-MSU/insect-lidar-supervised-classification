@@ -14,14 +14,14 @@ function features = extractPsdStats(psd)
 %       'SkewnessPsd'   - Zero-mean skewness of the PSD   
 %       'KurtosisPsd'   - Zero-mean kurtosis of the PSD     
 
-avg_psd = mean(psd, 2);
-std_psd = std(psd, 0, 2);
-median_psd = median(psd, 2);
-mad_psd = mad(psd, 1, 2);
+% avg_psd = mean(psd, 2);
+% std_psd = std(psd, 0, 2);
+% median_psd = median(psd, 2);
+% mad_psd = mad(psd, 1, 2);
 skew_psd = skewness(psd, 1, 2);
 skew_psd = skew_psd - mean(skew_psd);
-kurtosis_psd = kurtosis(psd, 1, 2);
-kurtosis_psd = kurtosis_psd - mean(kurtosis_psd);
+% kurtosis_psd = kurtosis(psd, 1, 2);
+% kurtosis_psd = kurtosis_psd - mean(kurtosis_psd);
 
 % compute the index at which 99% of energy is contained
 % energypct = cumsum(psd,2)./sum(psd,2);
@@ -38,12 +38,12 @@ kurtosis_psd = kurtosis_psd - mean(kurtosis_psd);
 % end
 
 features = table;
-features.MeanPsd = avg_psd;
-features.StdPsd = std_psd;
-features.MedianPsd = median_psd;
-features.MadPsd = mad_psd;
+% features.MeanPsd = avg_psd;
+% features.StdPsd = std_psd;
+% features.MedianPsd = median_psd;
+% features.MadPsd = mad_psd;
 features.SkewnessPsd = skew_psd;
-features.KurtosisPsd = kurtosis_psd;
+% features.KurtosisPsd = kurtosis_psd;
 % features.Bin99PctEnergy = energy99pct;
 
 end

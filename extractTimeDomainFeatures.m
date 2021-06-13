@@ -11,15 +11,15 @@ function features = extractTimeDomainFeatures(X)
 %       'StdDev'                - The standard deviation of each row
 %       'MaxDiff'               - The maximum absolute first difference in a row
 
-rowMean = mean(X, 2);
-imageMean = mean(X(:));
+% rowMean = mean(X, 2);
+% imageMean = mean(X(:));
 
-rowStd = std(X, 0, 2);
+% rowStd = std(X, 0, 2);
 
 maxDiff = max(abs(diff(X, 1, 2)), [], 2);
 
 features = table;
-features.RowMeanMinusImageMean = rowMean - imageMean;
-features.StdDev = rowStd;
+% features.RowMeanMinusImageMean = rowMean - imageMean;
+% features.StdDev = rowStd;
 features.MaxDiff = maxDiff;
 end

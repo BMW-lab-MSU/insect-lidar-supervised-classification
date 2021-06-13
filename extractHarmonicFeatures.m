@@ -109,4 +109,8 @@ for n = 1:nHarmonicCombinations
     features.(['HarmonicWidthRatio' ratioStr]) = harmonicWidthRatio(:, n);
     features.(['HarmonicProminenceRatio' ratioStr]) = harmonicProminenceRatio(:, n);
 end
+
+features = features(:, {'HarmonicWidth1', 'HarmonicHeight1', ...
+    'HarmonicHeightRatio23', 'HarmonicHeightRatio12', 'HarmonicHeightRatio13', ...
+    'HarmonicWidth2'});
 end
