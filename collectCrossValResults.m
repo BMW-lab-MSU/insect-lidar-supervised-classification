@@ -2,15 +2,15 @@
 
 datadir = '/home/trevor/research/afrl/data/Data_2020_Insect_Lidar/MLSP-2021';
 
-modelNames = {'Adaboost', 'RUSBoost', 'nnet'};
+modelNames = {'Adaboost', 'RUSBoost', 'Net'};
 
 load([datadir filesep 'training' filesep 'trainingData']);
 
 %% Collect cross validation results for all models
 for model = modelNames
-    tmp = load([box_dir filesep 'training' filesep ...
+    tmp = load([datadir filesep 'training' filesep ...
         'hyperparameterTuning' model{:}]);
-    tmp2 = load([box_dir filesep 'training' filesep ...
+    tmp2 = load([datadir filesep 'training' filesep ...
         'samplingTuning' model{:}]);
     
     results.(model{:}).Params = tmp.bestParams;
@@ -42,4 +42,4 @@ for model = modelNames
     results.(model{:}).Image.MCC = mcc;
 end
 
-save([box_dir filesep 'training' filesep 'cvResults'], '-struct', 'results');
+save([datadir filesep 'training' filesep 'cvResults'], '-struct', 'results');
