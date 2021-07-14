@@ -1,5 +1,7 @@
 function [objective, constraints, userdata] = cvobjfun(fitcfun, hyperparams, undersamplingRatio, nAugment, crossvalPartition, features, data, labels, scanLabel, opts)
 % cvobjfun Optimize hyperparameters via cross-validation
+
+% SPDX-License-Identifier: BSD-3-Clause
 arguments
     fitcfun (1,1) function_handle
     hyperparams

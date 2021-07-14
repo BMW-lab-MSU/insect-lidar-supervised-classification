@@ -1,5 +1,7 @@
 function confmat = imageConfusion(pred, target, partition)
 
+% SPDX-License-Identifier: BSD-3-Clause
+
 % split predicted labels for each test set into 178x1 vectors for each image
 if iscell(pred)
     tmp = cellfun(@(c) mat2cell(c, 178*ones(1,numel(c)/178), 1), pred, 'UniformOutput', false);

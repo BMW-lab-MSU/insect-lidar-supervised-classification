@@ -1,10 +1,11 @@
+% SPDX-License-Identifier: BSD-3-Clause
 %% Insect example figures for IEEE RAPID 2020 paper
 
 %%
 RANGE_INCREMENT = 0.75;
 
 %% load data and labels
-box_dir = '../../../data/Data_2020_Insect_Lidar/2020-09-16/';
+box_dir = '../../data/Data_2020_Insect_Lidar/2020-09-16/';
 data_dir = [box_dir 'HyaliteCreek-210206'];
 label_dir = [box_dir 'events'];
 

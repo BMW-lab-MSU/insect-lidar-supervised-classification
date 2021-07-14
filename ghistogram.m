@@ -1,5 +1,7 @@
 function h = ghistogram(X, G)
 
+% SPDX-License-Identifier: BSD-3-Clause
+
 groups = categories(G);
 
 % h = figure;

@@ -11,6 +11,8 @@ function features = extractTimeDomainFeatures(X)
 %       'StdDev'                - The standard deviation of each row
 %       'MaxDiff'               - The maximum absolute first difference in a row
 
+% SPDX-License-Identifier: BSD-3-Clause
+
 rowMean = mean(X, 2);
 imageMean = mean(X(:));
 

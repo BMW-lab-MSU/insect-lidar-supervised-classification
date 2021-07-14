@@ -1,5 +1,6 @@
 function [newFeatures, labels] = dataAugmentation(data, labels, nAugmented, opts)
 
+% SPDX-License-Identifier: BSD-3-Clause
 arguments
     data (:,:) {mustBeNumeric}
     labels (:, 1) logical

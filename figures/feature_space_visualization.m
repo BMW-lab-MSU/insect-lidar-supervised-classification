@@ -1,3 +1,5 @@
+% SPDX-License-Identifier: BSD-3-Clause
+
 addpath('..')
 
 box_dir = '../../../data/Data_2020_Insect_Lidar';

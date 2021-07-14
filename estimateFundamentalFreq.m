@@ -6,6 +6,8 @@ function fundamental = estimateFundamentalFreq(psd, opts)
 %   frequency in the one-sided power spectral density magnitude, psd. 
 %
 %   See also harmonicProductSpectrum.
+
+% SPDX-License-Identifier: BSD-3-Clause
 arguments
     psd (:,:) {mustBeNumeric}
     opts.UseParallel (1,1) logical = false

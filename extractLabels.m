@@ -9,6 +9,8 @@ function labels = extractLabels(insects, datastruct)
 %
 %   Example: labels = extract_labels(fftcheck.insects, adjusted_data_decembercal)
 
+% SPDX-License-Identifier: BSD-3-Clause
+
 [nrows, ncolumns] = size(datastruct(1).normalized_data);
 labels = cell(numel(datastruct), 1);
 

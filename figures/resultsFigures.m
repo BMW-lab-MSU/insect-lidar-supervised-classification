@@ -1,3 +1,4 @@
+% SPDX-License-Identifier: BSD-3-Clause
 %%
 datadir = '../../data/Data_2020_Insect_Lidar/MLSP-2021';
 cvResults = load([datadir filesep 'training' filesep 'cvResults']);
@@ -38,7 +39,7 @@ writetable(testResultsTable, 'testResults.csv', 'WriteRowNames', true);
 %% Confusion matrices
 classNames = ["Non-insect", "Insect"];
 
-cvConfusionFig = figure('Units', 'Inches', 'Position', [2 2 3.39 2]);
+cvConfusionFig = figure('Units', 'Inches', 'Position', [2 2 3.39 1.75]);
 
 cvConfusion = tiledlayout(cvConfusionFig, 2, 1);
 
@@ -49,6 +50,8 @@ cvRowConf.FontSize = 10;
 cvRowConf.XLabel = '';
 cvRowConf.YLabel = '';
 cvRowConf.Title = 'Observation';
+set(gca, 'FontName', 'CMU Serif')
+
 
 nexttile
 cvImageConf = confusionchart(cvResults.Adaboost.Image.Confusion, classNames);
@@ -62,11 +65,20 @@ cvConfusion.XLabel.String = 'Predicted class';
 cvConfusion.YLabel.String = 'True class';
 cvConfusion.XLabel.FontSize = 10;
 cvConfusion.YLabel.FontSize = 10;
+set(gca, 'FontName', 'CMU Serif')
+
+cvConfusion.Padding = 'tight';
+cvConfusion.TileSpacing = 'tight';
+cvConfusion.XLabel.FontName = 'CMU Serif';
+cvConfusion.YLabel.FontName = 'CMU Serif';
+
+
+cv
 
 exportgraphics(cvConfusionFig, 'cvConfusion.pdf', 'ContentType', 'vector')
 
 
-testConfusionFig = figure('Units', 'Inches', 'Position', [2 2 3.39 2]);
+testConfusionFig = figure('Units', 'Inches', 'Position', [2 2 3.39 1.75]);
 
 testConfusion = tiledlayout(testConfusionFig, 2, 1);
 
@@ -77,6 +89,7 @@ testRowConf.FontSize = 10;
 testRowConf.XLabel = '';
 testRowConf.YLabel = '';
 testRowConf.Title = 'Observation';
+set(gca, 'FontName', 'CMU Serif');
 
 nexttile
 testImageConf = confusionchart(testResults.adaBoost.Image.Confusion, classNames);
@@ -90,6 +103,13 @@ testConfusion.XLabel.String = 'Predicted class';
 testConfusion.YLabel.String = 'True class';
 testConfusion.XLabel.FontSize = 10;
 testConfusion.YLabel.FontSize = 10;
+testConfusion.XLabel.FontName = 'CMU Serif';
+testConfusion.YLabel.FontName = 'CMU Serif';
+
+testConfusion.Padding = 'tight';
+testConfusion.TileSpacing = 'tight';
+
+set(gca, 'FontName', 'CMU Serif');
 
 exportgraphics(testConfusionFig, 'testConfusion.pdf', 'ContentType', 'vector')
 

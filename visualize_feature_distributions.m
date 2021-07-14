@@ -1,5 +1,7 @@
 function visualize_feature_distributions(features, labels, feature_names)
 
+% SPDX-License-Identifier: BSD-3-Clause
+
 groups = categorical(labels, [0, 1], {'Non-insect', 'Insect'});
 
 % %plot properties

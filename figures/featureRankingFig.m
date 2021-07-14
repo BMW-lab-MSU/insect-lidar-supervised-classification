@@ -1,3 +1,4 @@
+% SPDX-License-Identifier: BSD-3-Clause
 %%
 clear
 
@@ -14,14 +15,16 @@ labels = nestedcell2mat(trainingLabels);
 close all;
 [idx, scores] = fscmrmr(features, labels);
 
-fig = figure('Units', 'inches', 'Position', [2 2 3.39*2 2.5]);
+%%
+fig = figure('Units', 'inches', 'Position', [2 2 3.39*2 1.8]);
 
 bar(scores(idx));
-xlabel('Rank')
-ylabel('Importance score')
+xline(8.5, '--', 'LineWidth', 1);
+ylabel('Importance')
 xticks(1:numel(idx))
 xticklabels(features.Properties.VariableNames(idx))
 set(gca, 'FontSize', 9)
+set(gca, 'FontName', 'CMU Serif')
 
 exportgraphics(fig, 'featureRanking.pdf', 'ContentType', 'vector')
 

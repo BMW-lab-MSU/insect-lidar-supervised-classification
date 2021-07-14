@@ -1,3 +1,5 @@
+% SPDX-License-Identifier: BSD-3-Clause
+
 load('../results.mat')
 
 confusion_fig = figure('Units', 'inches', 'Position', [2 2 6 2.5]);

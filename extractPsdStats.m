@@ -14,6 +14,8 @@ function features = extractPsdStats(psd)
 %       'SkewnessPsd'   - Zero-mean skewness of the PSD   
 %       'KurtosisPsd'   - Zero-mean kurtosis of the PSD     
 
+% SPDX-License-Identifier: BSD-3-Clause
+
 avg_psd = mean(psd, 2);
 std_psd = std(psd, 0, 2);
 median_psd = median(psd, 2);

@@ -16,6 +16,8 @@ function features = extractHarmonicFeatures(psd, nHarmonics, opts)
 %       'HarmonicWidthRatio'        - The ratio between harmonic widths
 %       'HarmonicProminenceRatio'   - The ratio between harmonic prominences
 
+% SPDX-License-Identifier: BSD-3-Clause
+
 % TODO: make nBins an input parameter
 arguments
     psd (:,:) {mustBeNumeric}

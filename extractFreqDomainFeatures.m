@@ -23,6 +23,8 @@ function features = extractFreqDomainFeatures(X, opts)
 %       'HarmonicWidthRatio'        - The ratio between harmonic widths
 %       'HarmonicProminenceRatio'   - The ratio between harmonic prominences
 
+% SPDX-License-Identifier: BSD-3-Clause
+
 arguments
     X (:,:) {mustBeNumeric}
     opts.UseParallel (1,1) logical = false

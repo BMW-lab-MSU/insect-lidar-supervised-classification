@@ -1,4 +1,6 @@
 function result = tuneSamplingBase(fitcfun, features, data, labels, scanLabel, crossvalPartition, opts)
+
+% SPDX-License-Identifier: BSD-3-Clause
 arguments
     fitcfun (1,1) function_handle
     features (:,1) cell

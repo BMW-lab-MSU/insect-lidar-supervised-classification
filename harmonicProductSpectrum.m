@@ -7,6 +7,8 @@ function hps = harmonicProductSpectrum(spectrum, nSpectra)
 %   power spectral density. nSpectra determines the the number of spectral
 %   copies to use when computing the harmonic product spectrum.
 
+% SPDX-License-Identifier: BSD-3-Clause
+
 rows = height(spectrum);
 cols = floor(width(spectrum) / nSpectra);
 spectra = zeros(nSpectra, rows, cols);
