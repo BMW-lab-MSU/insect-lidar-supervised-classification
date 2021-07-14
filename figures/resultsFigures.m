@@ -73,8 +73,6 @@ cvConfusion.XLabel.FontName = 'CMU Serif';
 cvConfusion.YLabel.FontName = 'CMU Serif';
 
 
-cv
-
 exportgraphics(cvConfusionFig, 'cvConfusion.pdf', 'ContentType', 'vector')
 
 
