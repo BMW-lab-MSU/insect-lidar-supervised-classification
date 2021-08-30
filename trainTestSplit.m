@@ -2,10 +2,14 @@
 %% Setup
 clear
 
+if ~exist(gcp('nocreate'))
+    parpool();
+end
+
 % Set random number generator properties for reproducibility
 rng(0, 'twister');
 
-datadir = '/home/trevor/research/afrl/data/Data_2020_Insect_Lidar/MLSP-2021';
+datadir = '../data/insect-lidar/MLSP-2021';
 datafile = 'scans.mat';
 
 %% Load data
@@ -16,8 +20,8 @@ load([datadir filesep datafile])
 scanFeatures = cell(numel(scans), 1);
 
 for i = progress(1:numel(scans))
-    scanFeatures{i} = cellfun(@(X) extractFeatures(X), scans(i).Data, ...
-        'UniformOutput', false);
+    scanFeatures{i} = cellfun(@(X) extractFeatures(X, 'UseParallel', true), ...
+        scans(i).Data, 'UniformOutput', false);
 end
 
 %%
