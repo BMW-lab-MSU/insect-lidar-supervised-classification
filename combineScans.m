@@ -4,7 +4,7 @@ tic
 N_ROWS = 178;
 N_COLS = 1024;
 
-basefilepath = "../data/Data_2020_Insect_Lidar";
+basefilepath = "../data/insect-lidar";
 
 days = ["2020-09-16", "2020-09-17", "2020-09-18", "2020-09-20"];
 
@@ -50,14 +50,31 @@ for i = 1:numel(days)
         scans(scanNum).Day = days(i);
         scans(scanNum).Id = scanIds{i}(j);
 
+        % Convert data to single-precsion to reduce memory usage
         scans(scanNum).Data = cellfun(@(c) single(c), ...
             {adjusted_data_decembercal.normalized_data}', ...
             'UniformOutput', false);
 
         % Create label vectors
-        labels = extractLabels(fftcheck.insects, adjusted_data_decembercal);
-        scans(scanNum).Labels = labels;
-        scans(scanNum).ImageLabels = cellfun(@(c) any(c), labels);
+        % There are two types of labels: "definitely" insects and "maybe" insects;
+        % these labels are combined together into a binary "insect/not-insect" label,
+        % but we also keep fields for both label types for convenience when looking at
+        % results (e.g. to see if the false positives were "definitely" or "maybe" insects).
+        insects = extractLabels(fftcheck.insects, adjusted_data_decembercal);
+        maybeInsects = extractLabels(fftcheck.maybe_insects, adjusted_data_decembercal);
+
+        scans(scanNum).InsectLabels = insects;
+        scans(scanNum).MaybeInsectLabels = maybeInsects;
+        scans(scanNum).Labels = [insects; maybeInsects];
+
+        % Create labels for entire images
+        scans(scanNum).InsectImageLabels = cellfun(@(c) any(c), insects);
+        scans(scanNum).MaybeInsectImageLabels = cellfun(@(c) any(c), maybeInsects);
+        scans(scanNum).ImageLabels = cellfun(@(c) any(c), scans(scanNum).Labels);
+
+        % Create labels for entire scans
+        scans(scanNum).InsectScanLabel = any(scans(scanNum).InsectImageLabels);
+        scans(scanNum).MaybeInsectScanLabel = any(scans(scanNum).MaybeInsectImageLabels);
         scans(scanNum).ScanLabel = any(scans(scanNum).ImageLabels);
 
         % Grab metadata
@@ -74,5 +91,5 @@ for i = 1:numel(days)
     end
 end
 
-save('scans', 'scans', '-v7.3');
+save(basefilepath + filesep + "MLSP-2021" + filesep + "scans", 'scans', '-v7.3');
 toc
