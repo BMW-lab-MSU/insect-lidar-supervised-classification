@@ -65,7 +65,7 @@ for i = 1:numel(days)
 
         scans(scanNum).InsectLabels = insects;
         scans(scanNum).MaybeInsectLabels = maybeInsects;
-        scans(scanNum).Labels = [insects; maybeInsects];
+        scans(scanNum).Labels = cellfun(@(c1, c2) or(c1, c2), insects, maybeInsects, 'UniformOutput', false);
 
         % Create labels for entire images
         scans(scanNum).InsectImageLabels = cellfun(@(c) any(c), insects);
