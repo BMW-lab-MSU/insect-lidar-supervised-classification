@@ -16,7 +16,7 @@ arguments
     opts.UseParallel (1,1) logical = false
 end
 
-MINORITY_LABEL = 0;
+MAJORITY_LABEL = 0;
 
 if opts.UseParallel
     statset('UseParallel', true);
@@ -44,7 +44,7 @@ for i = 1:crossvalPartition.NumTestSets
 
     % Undersample the majority class
     idxRemove = randomUndersample(...
-        scanLabel(trainingSet), MINORITY_LABEL, ...
+        scanLabel(trainingSet), MAJORITY_LABEL, ...
         'UndersamplingRatio', undersamplingRatio, ...
         'Reproducible', true, 'Seed', i);
     
@@ -88,14 +88,13 @@ if opts.Progress
     progressbar.release();
 end
 
-[~, ~, ~, f2, mcc] = analyzeConfusion(sum(crossvalConfusion, 3));
-objective = -f2;
+[~, ~, ~, ~, mcc] = analyzeConfusion(sum(crossvalConfusion, 3));
+objective = -mcc;
 
 constraints = [];
 
 userdata.confusion = crossvalConfusion;
 userdata.model = models;
-userdata.f2 = f2;
 userdata.mcc = mcc;
 userdata.predLabels = predLabels;
 end
