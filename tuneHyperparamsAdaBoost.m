@@ -5,7 +5,7 @@ rng(0, 'twister');
 datadir = '../data/insect-lidar/MLSP-2021';
 
 if isempty(gcp('nocreate'))
-    parpool();
+    parpool(8, 'IdleTimeout', Inf);
 end
 
 %% Load data
