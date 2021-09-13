@@ -91,5 +91,6 @@ for i = 1:numel(days)
     end
 end
 
+mkdir(basefilepath + filesep + "MLSP-2021")
 save(basefilepath + filesep + "MLSP-2021" + filesep + "scans", 'scans', '-v7.3');
 toc
