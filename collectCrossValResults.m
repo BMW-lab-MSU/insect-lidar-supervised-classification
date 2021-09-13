@@ -1,7 +1,7 @@
 % SPDX-License-Identifier: BSD-3-Clause
 %% Setup
 
-datadir = '/home/trevor/research/afrl/data/Data_2020_Insect_Lidar/MLSP-2021';
+datadir = '../data/insect-lidar/MLSP-2021';
 
 modelNames = {'Adaboost', 'RUSBoost', 'Net'};
 

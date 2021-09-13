@@ -2,7 +2,7 @@
 %% Setup
 clear
 
-datadir = '../data/Data_2020_Insect_Lidar/MLSP-2021';
+datadir = '../data/insect-lidar/MLSP-2021';
 
 %% Load data
 load([datadir filesep 'scans.mat']);
