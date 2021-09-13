@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Vannoy"
+  given-names: "Trevor C."
+  orcid: "https://orcid.org/0000-0003-4034-9963"
+- family-names: "Scofield"
+  given-names: "Trey P."
+- family-names: "Logan"
+  given-names: "Riley D."
+- family-names: "Rehbein"
+  given-names: "Elizabeth M."
+- family-names: "Shaw"
+  given-names: "Joseph A."
+  orcid: "https://orcid.org/0000-0003-1056-1269"
+- family-names: "Whitaker"
+  given-names: "Bradley M."
+  orcid: "https://orcid.org/0000-0001-8884-9743"
+title: "Insect Lidar Supervised Classification"
+version: 1.0.0
+license: BSD-3-Clause
+date-released: 2021-09-13
+repository-code: "https://github.com/BMW-lab-MSU/insect-lidar-supervised-classification"
