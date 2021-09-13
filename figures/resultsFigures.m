@@ -1,6 +1,6 @@
 % SPDX-License-Identifier: BSD-3-Clause
 %%
-datadir = '../../data/Data_2020_Insect_Lidar/MLSP-2021';
+datadir = '../../data/insect-lidar/MLSP-2021';
 cvResults = load([datadir filesep 'training' filesep 'cvResults']);
 testResults = load([datadir filesep 'testing' filesep 'results']);
 
@@ -44,7 +44,7 @@ cvConfusionFig = figure('Units', 'Inches', 'Position', [2 2 3.39 1.75]);
 cvConfusion = tiledlayout(cvConfusionFig, 2, 1);
 
 nexttile
-cvRowConf = confusionchart(cvResults.Adaboost.Row.Confusion, classNames);
+cvRowConf = confusionchart(cvResults.Net.Row.Confusion, classNames);
 sortClasses(cvRowConf, classNames);
 cvRowConf.FontSize = 10;
 cvRowConf.XLabel = '';
@@ -54,7 +54,7 @@ set(gca, 'FontName', 'CMU Serif')
 
 
 nexttile
-cvImageConf = confusionchart(cvResults.Adaboost.Image.Confusion, classNames);
+cvImageConf = confusionchart(cvResults.Net.Image.Confusion, classNames);
 sortClasses(cvImageConf, classNames);
 cvImageConf.FontSize = 10;
 cvImageConf.XLabel = '';
@@ -81,7 +81,7 @@ testConfusionFig = figure('Units', 'Inches', 'Position', [2 2 3.39 1.75]);
 testConfusion = tiledlayout(testConfusionFig, 2, 1);
 
 nexttile
-testRowConf = confusionchart(testResults.adaBoost.Row.Confusion, classNames);
+testRowConf = confusionchart(testResults.nnet.Row.Confusion, classNames);
 sortClasses(testRowConf, classNames);
 testRowConf.FontSize = 10;
 testRowConf.XLabel = '';
@@ -90,7 +90,7 @@ testRowConf.Title = 'Observation';
 set(gca, 'FontName', 'CMU Serif');
 
 nexttile
-testImageConf = confusionchart(testResults.adaBoost.Image.Confusion, classNames);
+testImageConf = confusionchart(testResults.nnet.Image.Confusion, classNames);
 sortClasses(testImageConf, classNames);
 testImageConf.FontSize = 10;
 testImageConf.XLabel = '';
