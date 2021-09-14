@@ -20,4 +20,5 @@ title: "Insect Lidar Supervised Classification"
 version: 1.0.0
 license: BSD-3-Clause
 date-released: 2021-09-13
+doi: 10.5281/zenodo.5504409
 repository-code: "https://github.com/BMW-lab-MSU/insect-lidar-supervised-classification"
