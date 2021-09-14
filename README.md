@@ -1,9 +1,11 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5504409.svg)](https://doi.org/10.5281/zenodo.5504409)
+
 # Insect Lidar Supervised Classification
 Code for detecting insects in lidar data.
 
 This repository contains the code used to create the results and figures in our paper *Detection of Insects in Class-imbalanced Lidar Field Measurements*, which was published in and presented at the 2021 IEEE Machine Learning for Signal Processing conference. 
 
-The dataset used in this paper is archived at [insert Zenodo link]().
+The dataset used in this paper is archived at [Zenodo](https://zenodo.org/record/5504411) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5504411.svg)](https://doi.org/10.5281/zenodo.5504411)
 
 ## How to run the experiments
 
