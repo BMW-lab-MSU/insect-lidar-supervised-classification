@@ -8,7 +8,7 @@ basefilepath = "../data/Data_2020_Insect_Lidar";
 
 days = ["2020-09-16", "2020-09-17", "2020-09-18", "2020-09-20"];
 
-scansIds = cell(numel(days), 1);
+scanIds = cell(numel(days), 1);
 
 % Get all the folders that contain a scan
 for i = 1:numel(days)
@@ -52,6 +52,10 @@ for i = 1:numel(days)
 
         scans(scanNum).Data = cellfun(@(c) single(c), ...
             {adjusted_data_decembercal.normalized_data}', ...
+            'UniformOutput', false);
+        
+        scans(scanNum).RawData = cellfun(@(c) single(c), ...
+            {adjusted_data_decembercal.data}', ...
             'UniformOutput', false);
 
         % Create label vectors
