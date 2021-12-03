@@ -4,4 +4,4 @@ load([datadir filesep 'testingData.mat'], 'testingRawData');
 
 images = nestedcell2mat(testingRawData);
 
-  save([datadir filesep 'streamingSimData.mat'], 'images', '-v7.3');
+save([datadir filesep 'streamingSimData.mat'], 'images', '-v7.3');
