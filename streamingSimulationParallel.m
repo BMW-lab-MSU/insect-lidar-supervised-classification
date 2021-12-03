@@ -11,8 +11,8 @@ datadir = '../data/insect-lidar/MLSP-2021';
 CLASSIFIERS = {'adaboost', 'rusboost', 'nnet'};
 
 datafilename = [datadir filesep 'testing' filesep 'streamingSimData.mat'];
-matobj = matfile(datafilename);
-N_IMAGES = size(matobj, 'images', 1);
+
+N_IMAGES = 1934;
 
 %%
 for classifier = CLASSIFIERS
