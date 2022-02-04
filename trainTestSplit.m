@@ -2,7 +2,7 @@
 %% Setup
 clear
 
-if ~exist(gcp('nocreate'))
+if isempty(gcp('nocreate'))
     parpool();
 end
 
