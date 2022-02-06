@@ -2,14 +2,14 @@
 %% Setup
 clear
 
-if ~exist(gcp('nocreate'))
+if isempty(gcp('nocreate'))
     parpool();
 end
 
 % Set random number generator properties for reproducibility
 rng(0, 'twister');
 
-datadir = '../data/insect-lidar/MLSP-2021';
+datadir = '../data/insect-lidar';
 datafile = 'scans.mat';
 
 %% Load data

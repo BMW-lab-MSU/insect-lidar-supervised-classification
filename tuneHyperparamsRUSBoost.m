@@ -2,7 +2,7 @@
 %% Setup
 rng(2, 'twister');
 
-datadir = '../data/insect-lidar/MLSP-2021';
+datadir = '../data/insect-lidar';
 
 if isempty(gcp('nocreate'))
     parpool();
