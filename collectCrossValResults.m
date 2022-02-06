@@ -1,11 +1,11 @@
 % SPDX-License-Identifier: BSD-3-Clause
 %% Setup
 
-datadir = '../data/insect-lidar/MLSP-2021';
+datadir = '../data/insect-lidar';
 
 modelNames = {'Adaboost', 'RUSBoost', 'Net'};
 
-load([datadir filesep 'training' filesep 'trainingData']);
+load([datadir filesep 'training' filesep 'trainingData'])
 
 %% Collect cross validation results for all models
 for model = modelNames
