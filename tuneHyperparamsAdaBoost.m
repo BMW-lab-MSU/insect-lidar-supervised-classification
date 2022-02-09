@@ -5,7 +5,7 @@ rng(0, 'twister');
 datadir = '../data/insect-lidar';
 
 if isempty(gcp('nocreate'))
-    parpool(8, 'IdleTimeout', Inf);
+    parpool('IdleTimeout', Inf);
 end
 
 %% Load data
