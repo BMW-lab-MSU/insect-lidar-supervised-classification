@@ -36,13 +36,13 @@ peakLoc = cell(nRows, 1);
 peakWidth = cell(nRows, 1);
 peakProminence = cell(nRows, 1);
 
-harmonicHeight = nan(nRows, nHarmonics);
-harmonicLoc = nan(nRows, nHarmonics);
-harmonicWidth = nan(nRows, nHarmonics);
-harmonicProminence = nan(nRows, nHarmonics);
-harmonicHeightRatio = nan(nRows, nHarmonicCombinations);
-harmonicWidthRatio = nan(nRows, nHarmonicCombinations);
-harmonicProminenceRatio = nan(nRows, nHarmonicCombinations);
+harmonicHeight = nan(nRows, nHarmonics, 'like', psd);
+harmonicLoc = nan(nRows, nHarmonics, 'like', psd);
+harmonicWidth = nan(nRows, nHarmonics, 'like', psd);
+harmonicProminence = nan(nRows, nHarmonics, 'like', psd);
+harmonicHeightRatio = nan(nRows, nHarmonicCombinations, 'like', psd);
+harmonicWidthRatio = nan(nRows, nHarmonicCombinations, 'like', psd);
+harmonicProminenceRatio = nan(nRows, nHarmonicCombinations, 'like', psd);
 
 fundamental = estimateFundamentalFreq(psd, 'UseParallel', opts.UseParallel);
 
@@ -55,30 +55,24 @@ end
 parfor (i = 1:nRows, nWorkers)
     % Get features for all peaks
     [peakHeight{i}, peakLoc{i}, peakWidth{i}, peakProminence{i}] = findpeaks(psd(i,:));
+    peakHeight{i} = single(peakHeight{i});
+    peakLoc{i} = single(peakLoc{i});
+    peakWidth{i} = single(peakWidth{i});
+    peakProminence{i} = single(peakProminence{i});
 end
 
 for i = 1:nRows
-    % Compute how close the each peaks' frequency bin is to being an integer
-    % multiple of the fundamental frequency.
-    % TODO: I think this could be done with rem()
-    freqBinDiffs = peakLoc{i}/fundamental(i) - fix(peakLoc{i}/fundamental(i));
-
-    % Find the peak locations that are within nBins of an integer multiple of
-    % the fundamental frequency.
-    tmp = find(1 - freqBinDiffs <= nBins/fundamental(i) | freqBinDiffs <= nBins/fundamental(i));
+    % Grab the peaks that are harmonics of the fundamental
+    [harmonicLoc(i,:), harmonicIdx] = findHarmonics(peakLoc{i}, fundamental(i), nHarmonics);
     
-    % Grab the peaks that are harmonics of the fundamental; if there are less
-    % than nHarmonics, the missing harmonics are set as NaN.
-    if numel(tmp) >= nHarmonics
-        harmonicLoc(i,:) = peakLoc{i}(tmp(1:nHarmonics));
-        harmonicWidth(i,:) = peakWidth{i}(tmp(1:nHarmonics));
-        harmonicProminence(i,:) = peakProminence{i}(tmp(1:nHarmonics));
-        harmonicHeight(i,:) = peakHeight{i}(tmp(1:nHarmonics));
-    else
-        harmonicLoc(i,1:numel(tmp)) = peakLoc{i}(tmp);
-        harmonicWidth(i,1:numel(tmp)) = peakWidth{i}(tmp);
-        harmonicProminence(i,1:numel(tmp)) = peakProminence{i}(tmp);
-        harmonicHeight(i,1:numel(tmp)) = peakHeight{i}(tmp);
+    % Get features for the harmonics. If a harmonic wasn't found, harmonicIdx
+    % will be 0. All related features to be 0 if the harmonic wasn't found.
+    for j = 1:numel(harmonicIdx)
+        if harmonicIdx(j) ~= 0
+            harmonicWidth(i,j) = peakWidth{i}(harmonicIdx(j));
+            harmonicProminence(i,j) = peakProminence{i}(harmonicIdx(j));
+            harmonicHeight(i,j) = peakHeight{i}(harmonicIdx(j));
+        end
     end
     
     % Compute feature ratios for all n-choose-2 combinations of harmonics
