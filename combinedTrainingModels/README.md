@@ -1,5 +1,7 @@
 ## Models trained with all of the Hyalite data & the training split of the Teton data
 
+Below are the results from three models (neural net, RUSBoost, and AdaBoost), after they were trained on all the Hyalite data and the training split of the Teton data. The source code is on the `hannahCombinedTraining` branch.
+
 ### Results
 
 #### Neural Net
