@@ -4,10 +4,10 @@
 
 #### Neural Net
 
-| non-insect    | insect        |
-| ------------- | ------------- |
-| 42335         | 204           |
-| 3             | 0             |
+| True Class    | non-insect    | insect        |
+| ------------- | ------------- | ------------- |
+| non-insect    | 42335         | 204           |
+| insect        | 3             | 0             |
 
 
 #### RUSBoost
