@@ -52,3 +52,26 @@
 `Recall:` 1
 
 #### AdaBoost
+
+
+- row results (true class is vertical & predicted class is horizontal)
+
+|               | non-insect    | insect        |
+| ------------- | ------------- | ------------- |
+| non-insect    | 42538         | 1             |
+| insect        | 3             | 0             |
+
+`Accuracy:` 0.9999
+`Precision:` 0
+`Recall:` 0
+
+- image results (true class is vertical & predicted class is horizontal)
+
+|               | non-insect    | insect        |
+| ------------- | ------------- | ------------- |
+| non-insect    | 236           | 0             |
+| insect        | 2             | 1             |
+
+`Accuracy:` 0.9916
+`Precision:` 1
+`Recall:` 0.3333
