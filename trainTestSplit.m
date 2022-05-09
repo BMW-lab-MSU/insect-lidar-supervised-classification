@@ -9,8 +9,16 @@ end
 % Set random number generator properties for reproducibility
 rng(0, 'twister');
 
-datadir = '../data/insect-lidar';
+datadir = '../data/insect-lidar/hannah-22';
 datafile = 'scans.mat';
+
+% hyalite data file
+hdatafile = 'h-scans.mat';
+
+%% Load hyalite data and rename scans
+load([datadir filesep hdatafile])
+
+hscans = scans;
 
 %% Load data
 load([datadir filesep datafile])

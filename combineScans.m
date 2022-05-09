@@ -6,7 +6,7 @@ N_COLS = 1024;
 
 basefilepath = "../data/insect-lidar";
 
-days = ["2020-09-16", "2020-09-17", "2020-09-18", "2020-09-20"];
+days = ["2020-08-13"];
 
 scansIds = cell(numel(days), 1);
 
@@ -44,7 +44,7 @@ for i = 1:numel(days)
         
         % Load events/labels
         load(basefilepath + filesep + days(i) + filesep + "events" + filesep ...
-            + "fftcheck");
+            + "manual");
 
 
         scans(scanNum).Day = days(i);
@@ -60,21 +60,15 @@ for i = 1:numel(days)
         % these labels are combined together into a binary "insect/not-insect" label,
         % but we also keep fields for both label types for convenience when looking at
         % results (e.g. to see if the false positives were "definitely" or "maybe" insects).
-        insects = extractLabels(fftcheck.insects, adjusted_data_decembercal);
-        maybeInsects = extractLabels(fftcheck.maybe_insects, adjusted_data_decembercal);
+        insects = extractLabels(manual.insects, adjusted_data_decembercal);
 
         scans(scanNum).InsectLabels = insects;
-        scans(scanNum).MaybeInsectLabels = maybeInsects;
-        scans(scanNum).Labels = cellfun(@(c1, c2) or(c1, c2), insects, maybeInsects, 'UniformOutput', false);
+        scans(scanNum).Labels = insects;
 
         % Create labels for entire images
-        scans(scanNum).InsectImageLabels = cellfun(@(c) any(c), insects);
-        scans(scanNum).MaybeInsectImageLabels = cellfun(@(c) any(c), maybeInsects);
         scans(scanNum).ImageLabels = cellfun(@(c) any(c), scans(scanNum).Labels);
 
         % Create labels for entire scans
-        scans(scanNum).InsectScanLabel = any(scans(scanNum).InsectImageLabels);
-        scans(scanNum).MaybeInsectScanLabel = any(scans(scanNum).MaybeInsectImageLabels);
         scans(scanNum).ScanLabel = any(scans(scanNum).ImageLabels);
 
         % Grab metadata
@@ -91,6 +85,6 @@ for i = 1:numel(days)
     end
 end
 
-mkdir(basefilepath + filesep + "MLSP-2021")
-save(basefilepath + filesep + "MLSP-2021" + filesep + "scans", 'scans', '-v7.3');
+mkdir(basefilepath + filesep + "hannah-22")
+save(basefilepath + filesep + "hannah-22" + filesep + "scans", 'scans', '-v7.3');
 toc

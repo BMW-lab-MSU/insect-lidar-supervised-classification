@@ -2,7 +2,7 @@
 %% Setup
 rng(0, 'twister');
 
-datadir = '../data/insect-lidar';
+datadir = '../data/insect-lidar/hannah-22';
 
 if isempty(gcp('nocreate'))
 	parpool();
