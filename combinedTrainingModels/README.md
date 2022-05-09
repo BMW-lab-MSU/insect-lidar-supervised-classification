@@ -8,7 +8,7 @@
 | ------------- | ------------- | ------------- |
 | non-insect    | 42335         | 204           |
 | insect        | 3             | 0             |
-
+| Predicted Class                               |
 
 #### RUSBoost
 
