@@ -4,16 +4,10 @@
 
 #### Neural Net
 
-
-| non-insect | 42335 | 204 |
-
-| insect     | 3     | 0   |
-
-
-| First Header  | Second Header |
+| non-insect    | insect        |
 | ------------- | ------------- |
-| Content Cell  | Content Cell  |
-| Content Cell  | Content Cell  |
+| 42335         | 204           |
+| 3             | 0             |
 
 
 #### RUSBoost
