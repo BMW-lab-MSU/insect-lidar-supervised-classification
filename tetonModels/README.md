@@ -1,6 +1,6 @@
-### Models trained and tested on the Teton data from August 13th, 2020
+### Teton Only Models
 
-Below are the results from three models (neural net, RUSBoost, and AdaBoost), after they were trained on only the Teton data. The source code is on the `hannahTetonOnly` branch.
+Below are the results from three models (neural net, RUSBoost, and AdaBoost), after they were trained on only the Teton data from August 13th, 2020. The source code is on the `hannahTetonOnly` branch.
 
 #### Results
 
