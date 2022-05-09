@@ -2,14 +2,14 @@
 %% Setup
 rng(0, 'twister');
 
-datadir = '../data/insect-lidar';
+datadir = '../hannah-22';
 
 if isempty(gcp('nocreate'))
     parpool();
 end
 
 %% Load data
-load([datadir filesep 'training' filesep 'trainingData.mat']);
+load([datadir filesep 'combinedTraining' filesep 'trainingData.mat']);
 
 %% Tune sampling ratios
 result = tuneSamplingBase(@nnet, trainingFeatures, trainingData, ...
@@ -20,7 +20,7 @@ min(result.objective)
 result.undersamplingRatio
 result.nAugment
 
-save([datadir filesep 'training' filesep 'samplingTuningNet.mat'], 'result')
+save([datadir filesep 'combinedTraining' filesep 'samplingTuningNet.mat'], 'result')
 
 %% Model fitting function
 function model = nnet(data, labels, ~)

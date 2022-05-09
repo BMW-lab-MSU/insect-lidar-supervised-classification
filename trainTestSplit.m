@@ -9,8 +9,13 @@ end
 % Set random number generator properties for reproducibility
 rng(0, 'twister');
 
-datadir = '../data/insect-lidar';
+datadir = '../hannah-22';
 datafile = 'scans.mat';
+hdatafile = 'hscans.mat';
+
+%%Load Hyalite data and assign to hscans
+load([datadir filesep hdatafile])
+hscans = scans;
 
 %% Load data
 load([datadir filesep datafile])
@@ -24,9 +29,19 @@ for i = progress(1:numel(scans))
         scans(i).Data, 'UniformOutput', false);
 end
 
+hscanFeatures = cell(numel(hscans), 1);
+
+for i = progress(1:numel(hscans))
+    hscanFeatures{i} = cellfun(@(X) extractFeatures(X, 'UseParallel', true), ...
+        hscans(i).Data, 'UniformOutput', false);
+end
+
 %%
 labels = {scans.Labels}';
 scanLabels = vertcat(scans.ScanLabel);
+
+hlabels = {hscans.Labels}';
+hscanLabels = vertcat(hscans.ScanLabel);
 
 %% Partition into training and test sets
 TEST_PCT = 0.2;
@@ -34,11 +49,11 @@ TEST_PCT = 0.2;
 holdoutPartition = cvpartition(scanLabels, 'Holdout', TEST_PCT, 'Stratify', true);
 
 
-trainingData = {scans(training(holdoutPartition)).Data}';
+trainingData = vertcat({scans(training(holdoutPartition)).Data}', hscans.Data);
 testingData = {scans(test(holdoutPartition)).Data}';
-trainingFeatures = scanFeatures(training(holdoutPartition));
+trainingFeatures = vertcat(scanFeatures(training(holdoutPartition)), hscanFeatures);
 testingFeatures = scanFeatures(test(holdoutPartition));
-trainingLabels = labels(training(holdoutPartition));
+trainingLabels = vertcat(labels(training(holdoutPartition)), hlabels);
 testingLabels = labels(test(holdoutPartition));
 
 %% Partition the data for k-fold cross validation
@@ -49,12 +64,12 @@ crossvalPartition = cvpartition(scanLabels(training(holdoutPartition)), ...
 
 
 %% Save training and testing data
-mkdir(datadir, 'testing');
-save([datadir filesep 'testing' filesep 'testingData.mat'], ...
+mkdir(datadir, 'combinedTesting');
+save([datadir filesep 'combinedTesting' filesep 'testingData.mat'], ...
     'testingData', 'testingFeatures', 'testingLabels', ...
     'holdoutPartition', 'scanLabels', '-v7.3');
 
-mkdir(datadir, 'training');
-save([datadir filesep 'training' filesep 'trainingData.mat'], ...
+mkdir(datadir, 'combinedTraining');
+save([datadir filesep 'combinedTraining' filesep 'trainingData.mat'], ...
     'trainingData', 'trainingFeatures', 'trainingLabels', ...
     'crossvalPartition', 'holdoutPartition', 'scanLabels', '-v7.3');

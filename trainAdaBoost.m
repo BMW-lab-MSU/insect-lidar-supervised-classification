@@ -2,7 +2,7 @@
 %% Setup
 rng(0, 'twister');
 
-datadir = '../data/insect-lidar';
+datadir = '../hannah-22';
 
 if isempty(gcp('nocreate'))
 	parpool();
@@ -10,10 +10,10 @@ end
 statset('UseParallel', true);
 
 %% Load data
-load([datadir filesep 'training' filesep 'trainingData.mat']);
+load([datadir filesep 'combinedTraining' filesep 'trainingData.mat']);
 
-load([datadir filesep 'training' filesep 'samplingTuningAdaboost'])
-load([datadir filesep 'training' filesep 'hyperparameterTuningAdaboost'], 'bestParams')
+load([datadir filesep 'combinedTraining' filesep 'samplingTuningAdaboost'])
+load([datadir filesep 'combinedTraining' filesep 'hyperparameterTuningAdaboost'], 'bestParams')
 undersamplingRatio = result.undersamplingRatio
 nAugment = result.nAugment
 params = bestParams
@@ -45,8 +45,8 @@ clear('synthFeatures', 'synthLabels');
 %% Train the model
 model = adaboost(features, labels, params);
 
-mkdir([datadir filesep 'training' filesep 'models']);
-save([datadir filesep 'training' filesep 'models' filesep 'adaboost'], 'model');
+mkdir([datadir filesep 'combinedTraining' filesep 'models']);
+save([datadir filesep 'combinedTraining' filesep 'models' filesep 'adaboost'], 'model');
 
 %% Model fitting function
 function model = adaboost(data, labels, params)

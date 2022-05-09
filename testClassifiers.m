@@ -2,11 +2,11 @@
 %% Setup
 clear
 
-datadir = '../data/insect-lidar';
+datadir = '../hannah-22';
 
 %% Load data
 load([datadir filesep 'scans.mat']);
-load([datadir filesep 'testing' filesep 'testingData.mat']);
+load([datadir filesep 'combinedTesting' filesep 'testingData.mat']);
 
 imageLabels = vertcat(scans(test(holdoutPartition)).ImageLabels);
 clear scans
@@ -19,7 +19,7 @@ labels = nestedcell2mat(testingLabels);
 disp('Testing AdaBoost....')
 disp('---------------')
 disp('')
-load([datadir filesep 'training' filesep 'models' filesep 'adaboost.mat']);
+load([datadir filesep 'combinedTraining' filesep 'models' filesep 'adaboost.mat']);
 
 %%%%%%%%%%%%%%%%%%
 % row results
@@ -61,7 +61,7 @@ disp(adaBoost.Image)
 disp('Testing RUSBoost....')
 disp('---------------')
 disp('')
-load([datadir filesep 'training' filesep 'models' filesep 'rusboost.mat']);
+load([datadir filesep 'combinedTraining' filesep 'models' filesep 'rusboost.mat']);
 
 %%%%%%%%%%%%%%%%%%
 % row results
@@ -103,7 +103,7 @@ disp(rusBoost.Image)
 disp('Testing neural net....')
 disp('---------------')
 disp('')
-load([datadir filesep 'training' filesep 'models' filesep 'nnet.mat']);
+load([datadir filesep 'combinedTraining' filesep 'models' filesep 'nnet.mat']);
 
 %%%%%%%%%%%%%%%%%%
 % row results
@@ -142,4 +142,4 @@ disp(nnet.Image.Confusion)
 disp(nnet.Image)
 
 %% Save results
-save([datadir filesep 'testing' filesep 'results'], 'adaBoost', 'rusBoost', 'nnet');
+save([datadir filesep 'combinedTesting' filesep 'results'], 'adaBoost', 'rusBoost', 'nnet');

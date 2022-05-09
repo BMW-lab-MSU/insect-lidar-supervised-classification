@@ -2,16 +2,16 @@
 %% Setup
 rng(2, 'twister');
 
-datadir = '../data/insect-lidar';
+datadir = '../hannah-22';
 
 if isempty(gcp('nocreate'))
     parpool();
 end
 
 %% Load data
-load([datadir filesep 'training' filesep 'trainingData.mat']);
+load([datadir filesep 'combinedTraining' filesep 'trainingData.mat']);
 
-load([datadir filesep 'training' filesep 'samplingTuningRUSBoost'])
+load([datadir filesep 'combinedTraining' filesep 'samplingTuningRUSBoost'])
 undersamplingRatio = result.undersamplingRatio
 nAugment = result.nAugment
 [m,i]=min(result.objective)
@@ -44,7 +44,7 @@ bestParams = bestPoint(results);
 
 sum(results.UserDataTrace{results.IndexOfMinimumTrace(end)}.confusion,3)
 
-save([datadir filesep 'training' filesep 'hyperparameterTuningRUSBoost.mat'],...
+save([datadir filesep 'combinedTraining' filesep 'hyperparameterTuningRUSBoost.mat'],...
     'results', 'bestParams', '-v7.3');
 
 %% Model fitting function
