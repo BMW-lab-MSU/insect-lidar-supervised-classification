@@ -33,11 +33,16 @@ function features = extractFeatures(X, opts)
 
 arguments
     X (:,:) {mustBeNumeric}
+    
     opts.UseParallel (1,1) logical = false
 end
-
-timeFeatures = extractTimeDomainFeatures(X);
+if height(X) < 179
+    row_reduced = rowcollector(X);
+else
+    row_reduced = X;
+end
+timeFeatures = extractTimeDomainFeatures(row_reduced);
 freqFeatures = extractFreqDomainFeatures(X, 'UseParallel', opts.UseParallel);
-
-features = [timeFeatures, freqFeatures];
+tfFeatures = extractTFFeatures(row_reduced);
+features = [timeFeatures, freqFeatures, tfFeatures]; % ,tfFeatures
 end
