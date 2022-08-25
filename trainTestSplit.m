@@ -9,7 +9,7 @@ end
 % Set random number generator properties for reproducibility
 rng(0, 'twister');
 
-datadir = '../data/insect-lidar';
+datadir = '../data/projects/optec2022';
 datafile = 'scans.mat';
 
 %% Load data
@@ -42,7 +42,7 @@ trainingLabels = labels(training(holdoutPartition));
 testingLabels = labels(test(holdoutPartition));
 
 %% Partition the data for k-fold cross validation
-N_FOLDS = 5;
+N_FOLDS = 3;
 
 crossvalPartition = cvpartition(scanLabels(training(holdoutPartition)), ...
     'KFold', N_FOLDS, 'Stratify', true);

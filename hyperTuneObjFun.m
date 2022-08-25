@@ -1,10 +1,11 @@
-function [objective, constraints, userdata] = cvobjfun(fitcfun, hyperparams, undersamplingRatio, nAugment, crossvalPartition, features, data, labels, scanLabel, opts)
+function [objective, constraints, userdata] = hyperTuneObjFun(fitcfun, optParams, fixedParams, undersamplingRatio, nAugment, crossvalPartition, features, data, labels, scanLabel, opts)
 % cvobjfun Optimize hyperparameters via cross-validation
 
 % SPDX-License-Identifier: BSD-3-Clause
 arguments
     fitcfun (1,1) function_handle
-    hyperparams
+    optParams (1,:) table
+    fixedParams
     undersamplingRatio (1,1) double
     nAugment (1,1) double
     crossvalPartition (1,1) cvpartition
@@ -15,6 +16,8 @@ arguments
     opts.Progress (1,1) logical = false
     opts.UseParallel (1,1) logical = false
 end
+
+hyperparams=structFieldAppend(table2struct(optParams), fixedParams);
 
 MAJORITY_LABEL = 0;
 
@@ -61,14 +64,12 @@ for i = 1:crossvalPartition.NumTestSets
 
     clear('trainingDataScans', 'trainingLabelScans', 'trainingFeatureScans');
 
-    if nAugment > 0
-        % Create synthetic features
-        [synthFeatures, synthLabels] = dataAugmentation(trainingData, ...
-            trainingLabels, nAugment, 'UseParallel', opts.UseParallel);
-        trainingFeatures = vertcat(trainingFeatures, synthFeatures);
-        trainingLabels = vertcat(trainingLabels, synthLabels);
-        clear('synthFeatures', 'synthLabels');
-    end
+    % Create synthetic features
+    [synthFeatures, synthLabels] = dataAugmentation(trainingData, ...
+        trainingLabels, nAugment, 'UseParallel', opts.UseParallel);
+    trainingFeatures = vertcat(trainingFeatures, synthFeatures);
+    trainingLabels = vertcat(trainingLabels, synthLabels);
+    clear('synthFeatures', 'synthLabels');
 
     % Create Weights hyperparameter vector
 
@@ -87,6 +88,8 @@ for i = 1:crossvalPartition.NumTestSets
     % Compute performance metrics
     crossvalConfusion(:, :, i) = confusionmat(testingLabels, predLabels{i});
 
+    % losses(i) = loss(models{i}, testingData, testingLabels, 'loss', @focalLoss);
+    
     if opts.Progress
         progressbar([], [], []);
     end

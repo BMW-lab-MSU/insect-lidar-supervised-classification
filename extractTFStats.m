@@ -1,4 +1,10 @@
-function features = extractTFStats(cwavelet)
+function features = extractTFStats(cwavelet, opts)
+
+arguments
+    cwavelet
+    opts.UseParallel = false
+end
+
 [range,~] = size(cwavelet);
 if range < 1
     max_mean = [];
@@ -9,7 +15,9 @@ if range < 1
     max_diff = [];
     brk_up = [];
 end
-for i = 1:range
+
+
+for(i = 1:range)
     max_mean(i) = max(mean(cwavelet{i},2));
     max_std(i) = max(std(cwavelet{i},0,2));
     avg_mean(i) = mean(mean(cwavelet{i},2));

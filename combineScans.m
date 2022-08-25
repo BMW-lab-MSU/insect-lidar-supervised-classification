@@ -4,7 +4,8 @@ tic
 N_ROWS = 178;
 N_COLS = 1024;
 
-basefilepath = "../data/insect-lidar";
+rawDataDir = "../data/hyalite-creek";
+projectDataDir = "../data/projects/optec2022";
 
 days = ["2020-09-16", "2020-09-17", "2020-09-18", "2020-09-20"];
 
@@ -13,7 +14,7 @@ scansIds = cell(numel(days), 1);
 % Get all the folders that contain a scan
 for i = 1:numel(days)
     % Grab the directories under the "day" folder
-    tmp = string({dir(basefilepath + filesep + days(i)).name});
+    tmp = string({dir(rawDataDir + filesep + days(i)).name});
 
     % Find the directories that contain scans (which contain a timestamp),
     % e.g. "RedLight-225413"
@@ -39,11 +40,11 @@ for i = 1:numel(days)
         scanId = scanIds{i}(j);
 
         % Load data
-        load(basefilepath + filesep + days(i) + filesep + scanId ...
+        load(rawDataDir + filesep + days(i) + filesep + scanId ...
             + filesep + "adjusted_data_decembercal");
         
         % Load events/labels
-        load(basefilepath + filesep + days(i) + filesep + "events" + filesep ...
+        load(rawDataDir + filesep + days(i) + filesep + "events" + filesep ...
             + "fftcheck");
 
 
@@ -91,6 +92,6 @@ for i = 1:numel(days)
     end
 end
 
-mkdir(basefilepath + filesep + "MLSP-2021")
-save(basefilepath + filesep + "MLSP-2021" + filesep + "scans", 'scans', '-v7.3');
+mkdir(projectDataDir)
+save(projectDataDir + filesep + "scans", 'scans', '-v7.3');
 toc

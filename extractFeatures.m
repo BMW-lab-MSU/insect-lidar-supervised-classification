@@ -33,16 +33,19 @@ function features = extractFeatures(X, opts)
 
 arguments
     X (:,:) {mustBeNumeric}
-    
     opts.UseParallel (1,1) logical = false
 end
-if height(X) < 179
-    row_reduced = rowcollector(X);
+
+if height(X) == 178
+    % only zero out rows when we are working with an actual image; we don't want to zero out rows of synthetic data
+    row_reduced = rowcollector(X, 'UseParallel', opts.UseParallel);
 else
     row_reduced = X;
 end
 timeFeatures = extractTimeDomainFeatures(row_reduced);
+
+% FIXME: why does extractFreqDomainFeatures give an error when using row_reduced?
 freqFeatures = extractFreqDomainFeatures(X, 'UseParallel', opts.UseParallel);
-tfFeatures = extractTFFeatures(row_reduced);
+tfFeatures = extractTFFeatures(row_reduced, 'UseParallel', opts.UseParallel);
 features = [timeFeatures, freqFeatures, tfFeatures]; % ,tfFeatures
 end
